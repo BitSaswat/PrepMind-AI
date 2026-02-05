@@ -99,26 +99,7 @@ body {
     gap: 20px;
 }
 
-/* Theme Toggle Button */
-#themeToggle {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 18px;
-    transition: all 0.4s var(--ease-spring);
-    box-shadow: var(--shadow-card);
-}
-
-#themeToggle:hover {
-    transform: scale(1.15) rotate(15deg);
-    border-color: var(--accent);
-}
+/* Theme toggle styles moved to theme-toggle.css for reusability */
 
 /* --- PROFILE AVATAR --- */
 .user-avatar {

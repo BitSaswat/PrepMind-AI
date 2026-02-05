@@ -110,26 +110,7 @@ body {
     gap: 20px;
 }
 
-/* Theme Toggle (Exact Match) */
-#themeToggle {
-    background: var(--card-bg);
-    border: 2px solid var(--border);
-    border-radius: 50px;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 18px;
-    transition: all 0.4s var(--ease-spring);
-    box-shadow: var(--shadow-card);
-}
-
-#themeToggle:hover {
-    border-color: var(--accent);
-    transform: scale(1.1) rotate(15deg);
-}
+/* Theme toggle styles moved to theme-toggle.css for reusability */
 
 /* --- BACKGROUND SHAPES (Exact Match) --- */
 .background-shapes {
