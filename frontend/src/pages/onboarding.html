@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Your Profile | PrepMind AI</title>
+    <link rel="stylesheet" href="../assets/css/theme-transitions.css">
+    <link rel="stylesheet" href="../assets/css/theme-toggle.css">
+    <link rel="stylesheet" href="../assets/css/onboarding.css">
+    <link rel="stylesheet" href="../assets/css/success-modal.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="brand">Prep<span>Mind</span> AI</div>
+            <div class="nav-actions">
+                <div id="themeToggle"></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="background-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <main class="onboarding-container">
+        <div class="onboarding-card">
+
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+
+            <div class="onboarding-header">
+                <h1 class="onboarding-title">Let's set up your profile 🚀</h1>
+                <p class="onboarding-subtitle">Tell us about your goals so we can personalize your learning path.</p>
+            </div>
+
+            <div class="info-badge">
+                <span class="info-icon">ℹ️</span>
+                <span>We use this to generate your personalized study plan.</span>
+            </div>
+
+            <div id="onboardingMessage" class="message"></div>
+
+            <form id="onboardingForm">
+                <div class="form-group">
+                    <label class="form-label" for="targetExam">Target Exam</label>
+                    <div class="select-wrapper">
+                        <select id="targetExam" required>
+                            <option value="" disabled selected>Select your exam</option>
+                            <option value="JEE">JEE (Joint Entrance Examination)</option>
+                            <option value="NEET">NEET (Medical Entrance)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="educationLevel">Current Class</label>
+                        <div class="select-wrapper">
+                            <select id="educationLevel" required>
+                                <option value="" disabled selected>Select Class</option>
+                                <option value="11th">11th Grade</option>
+                                <option value="12th">12th Grade</option>
+                                <option value="Dropper">Dropper</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="targetYear">Target Year</label>
+                        <div class="select-wrapper">
+                            <select id="targetYear" required>
+                                <option value="" disabled selected>Select Year</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="studyHours">Daily Study Goal</label>
+                    <div class="select-wrapper">
+                        <select id="studyHours" required>
+                            <option value="" disabled selected>How many hours?</option>
+                            <option value="2-4">2-4 hours</option>
+                            <option value="4-6">4-6 hours</option>
+                            <option value="6+">6+ hours</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary-lg">Create Profile &rarr;</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="../js/utils/theme.js"></script>
+    <script type="module" src="../js/pages/onboarding.js"></script>
+</body>
+
+</html>

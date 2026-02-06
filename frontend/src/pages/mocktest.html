@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Test | PrepMind AI</title>
+    <link rel="stylesheet" href="../assets/css/theme-transitions.css">
+    <link rel="stylesheet" href="../assets/css/theme-toggle.css">
+    <link rel="stylesheet" href="../assets/css/mocktest.css">
+    <link rel="stylesheet" href="../assets/css/info-modal.css">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="brand">Prep<span>Mind</span> AI</div>
+            <div class="nav-actions">
+                <div id="themeToggle"></div>
+                <div class="user-profile" id="userProfile">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-dropdown">
+                        <div class="dropdown-item" id="profileBtn">
+                            <span class="dropdown-icon">👤</span>
+                            <span>Profile</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item" id="dashboardBtn">
+                            <span class="dropdown-icon">📊</span>
+                            <span>Dashboard</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item" id="logoutBtn">
+                            <span class="dropdown-icon">🚪</span>
+                            <span>Logout</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Background Effects -->
+    <div class="background-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <!-- Main Mock Test Content -->
+    <main class="mocktest-container">
+        <!-- Header Section -->
+        <section class="mocktest-header">
+            <div class="header-content">
+                <h1 class="mocktest-title">Start Your Mock Test 🎯</h1>
+                <p class="mocktest-subtitle">Choose a test type and begin your practice session</p>
+            </div>
+        </section>
+
+        <!-- Test Selection Cards -->
+        <section class="test-selection-section">
+            <h2 class="section-title">Available Tests</h2>
+            <div class="test-cards-grid">
+                <!-- Full Length Test -->
+                <div class="test-card test-card-primary">
+                    <div class="test-icon">📝</div>
+                    <h3 class="test-title">Full Length Mock Test</h3>
+                    <p class="test-description">Complete exam simulation with all subjects</p>
+                    <div class="test-details">
+                        <div class="detail-item">
+                            <span class="detail-icon">⏱️</span>
+                            <span class="detail-text">3 Hours</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">📚</span>
+                            <span class="detail-text">All Subjects</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">❓</span>
+                            <span class="detail-text">90 Questions</span>
+                        </div>
+                    </div>
+                    <button class="test-btn">Start Test</button>
+                </div>
+
+                <!-- Subject-wise Test -->
+                <div class="test-card">
+                    <div class="test-icon">🧪</div>
+                    <h3 class="test-title">Subject-wise Test</h3>
+                    <p class="test-description">Focus on a specific subject</p>
+                    <div class="test-details">
+                        <div class="detail-item">
+                            <span class="detail-icon">⏱️</span>
+                            <span class="detail-text">1 Hour</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">📚</span>
+                            <span class="detail-text">Single Subject</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">❓</span>
+                            <span class="detail-text">30 Questions</span>
+                        </div>
+                    </div>
+                    <button class="test-btn">Start Test</button>
+                </div>
+
+                <!-- Topic-wise Test -->
+                <div class="test-card">
+                    <div class="test-icon">💡</div>
+                    <h3 class="test-title">Topic-wise Test</h3>
+                    <p class="test-description">Practice specific topics</p>
+                    <div class="test-details">
+                        <div class="detail-item">
+                            <span class="detail-icon">⏱️</span>
+                            <span class="detail-text">30 Minutes</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">📚</span>
+                            <span class="detail-text">Single Topic</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">❓</span>
+                            <span class="detail-text">15 Questions</span>
+                        </div>
+                    </div>
+                    <button class="test-btn">Start Test</button>
+                </div>
+
+                <!-- Previous Year Papers -->
+                <div class="test-card">
+                    <div class="test-icon">📋</div>
+                    <h3 class="test-title">Previous Year Papers</h3>
+                    <p class="test-description">Solve past exam papers</p>
+                    <div class="test-details">
+                        <div class="detail-item">
+                            <span class="detail-icon">⏱️</span>
+                            <span class="detail-text">3 Hours</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">📚</span>
+                            <span class="detail-text">All Subjects</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">❓</span>
+                            <span class="detail-text">90 Questions</span>
+                        </div>
+                    </div>
+                    <button class="test-btn">Start Test</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Tests Section -->
+        <section class="recent-tests-section">
+            <h2 class="section-title">Recent Test History</h2>
+            <div class="recent-tests-list">
+                <div class="recent-test-item">
+                    <div class="recent-test-icon">✅</div>
+                    <div class="recent-test-content">
+                        <h4 class="recent-test-title">Physics Mock Test #1</h4>
+                        <p class="recent-test-date">Completed on Feb 3, 2026</p>
+                    </div>
+                    <div class="recent-test-score">
+                        <span class="score-value">85%</span>
+                        <span class="score-label">Score</span>
+                    </div>
+                    <button class="review-btn">Review</button>
+                </div>
+
+                <div class="recent-test-item">
+                    <div class="recent-test-icon">✅</div>
+                    <div class="recent-test-content">
+                        <h4 class="recent-test-title">Chemistry Practice Test</h4>
+                        <p class="recent-test-date">Completed on Feb 1, 2026</p>
+                    </div>
+                    <div class="recent-test-score">
+                        <span class="score-value">78%</span>
+                        <span class="score-label">Score</span>
+                    </div>
+                    <button class="review-btn">Review</button>
+                </div>
+
+                <div class="recent-test-item">
+                    <div class="recent-test-icon">✅</div>
+                    <div class="recent-test-content">
+                        <h4 class="recent-test-title">Mathematics Full Test</h4>
+                        <p class="recent-test-date">Completed on Jan 30, 2026</p>
+                    </div>
+                    <div class="recent-test-score">
+                        <span class="score-value">92%</span>
+                        <span class="score-label">Score</span>
+                    </div>
+                    <button class="review-btn">Review</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test Tips Section -->
+        <section class="tips-section">
+            <h2 class="section-title">Test Taking Tips 💡</h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <div class="tip-icon">⏰</div>
+                    <h3 class="tip-title">Time Management</h3>
+                    <p class="tip-description">Allocate time wisely across all sections</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">🎯</div>
+                    <h3 class="tip-title">Attempt Strategy</h3>
+                    <p class="tip-description">Start with questions you're confident about</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">✍️</div>
+                    <h3 class="tip-title">Review Answers</h3>
+                    <p class="tip-description">Always review your answers before submitting</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">🧘</div>
+                    <h3 class="tip-title">Stay Calm</h3>
+                    <p class="tip-description">Take deep breaths and stay focused</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/utils/theme.js"></script>
+    <script type="module" src="../js/pages/mocktest.js"></script>
+</body>
+
+</html>
