@@ -442,7 +442,7 @@ body {
     backdrop-filter: var(--glass-blur);
     border: 1px solid var(--border-color);
     border-radius: 28px;
-    padding: 32px;
+    padding: 24px;
     box-shadow: var(--shadow-lg);
     animation: cardFloat 8s ease-in-out infinite;
     transition: all 0.4s var(--spring-physics);
@@ -460,21 +460,21 @@ body {
     top: 0;
     left: 0;
     animation-delay: 0s;
-    width: 300px;
+    width: 240px;
 }
 
 .card-2 {
-    top: 200px;
-    right: 20px;
+    top: 240px;
+    right: 0;
     animation-delay: -2s;
-    width: 280px;
+    width: 220px;
 }
 
 .card-3 {
-    bottom: 50px;
-    left: 60px;
+    bottom: -60px;
+    left: 40px;
     animation-delay: -4s;
-    width: 260px;
+    width: 200px;
 }
 
 @keyframes cardFloat {
@@ -500,7 +500,7 @@ body {
 }
 
 .card-text {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 700;
     color: var(--text-primary);
 }

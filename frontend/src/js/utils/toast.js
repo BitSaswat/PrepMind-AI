@@ -33,7 +33,7 @@ export function showToast(message, type = 'error', duration = 3000) {
 
   // Auto-remove after duration
   setTimeout(() => {
-    toast.style.transform = 'translateX(400px) scale(0.8)';
+    toast.style.transform = 'translateY(-100px) scale(0.8)';
     toast.style.opacity = '0';
     setTimeout(() => {
       toast.remove();
@@ -41,6 +41,6 @@ export function showToast(message, type = 'error', duration = 3000) {
       if (container.children.length === 0) {
         container.remove();
       }
-    }, 400); // Match transition duration
+    }, 600); // Match transition duration
   }, duration);
 }
