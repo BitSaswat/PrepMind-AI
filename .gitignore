@@ -34,3 +34,10 @@ firebase-debug.log*
 
 # Windows junk
 *:Zone.Identifier
+
+
+# AI GIT IGNORE
+.env
+venv
+__pycache__/
+
