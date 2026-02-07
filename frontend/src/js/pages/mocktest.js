@@ -63,8 +63,35 @@ function initializeMockTestPage(user, userData) {
     }
   }
 
+  // Update subject text based on exam type
+  const targetExam = userData.targetExam || 'JEE';
+  updateSubjectText(targetExam);
+
   // Setup event listeners
   setupEventListeners();
+}
+
+// Update subject text based on exam type
+function updateSubjectText(examType) {
+  // Define subjects for each exam
+  const subjects = {
+    JEE: 'Physics, Chemistry, Math',
+    NEET: 'Physics, Chemistry, Biology'
+  };
+
+  const subjectText = subjects[examType] || subjects.JEE;
+
+  // Update Full Length Test subjects
+  const fullTestSubjects = document.getElementById('fullTestSubjects');
+  if (fullTestSubjects) {
+    fullTestSubjects.textContent = subjectText;
+  }
+
+  // Update PYQ Test subjects
+  const pyqTestSubjects = document.getElementById('pyqTestSubjects');
+  if (pyqTestSubjects) {
+    pyqTestSubjects.textContent = subjectText;
+  }
 }
 
 // Setup event listeners
@@ -107,10 +134,16 @@ function setupEventListeners() {
       const testCard = e.target.closest('.test-card');
       if (testCard) {
         const testTitle = testCard.querySelector('.test-title').textContent;
-        showInfoModal(
-          'Test Starting Soon! 🎯',
-          `The "${testTitle}" test interface is being developed. We're making it amazing for you!`
-        );
+
+        // Navigate to custom test page for "Custom Mock Test"
+        if (testTitle === 'Custom Mock Test') {
+          window.location.href = '../pages/custom-test.html';
+        } else {
+          showInfoModal(
+            'Test Starting Soon! 🎯',
+            `The "${testTitle}" test interface is being developed. We're making it amazing for you!`
+          );
+        }
       }
     });
   });

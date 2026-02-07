@@ -309,10 +309,19 @@ async function saveProfileChanges() {
       'Profile Updated! 🎉',
       'Your changes have been saved successfully.',
       () => {
-        loadProfileData(currentUser, currentUserData);
-        exitEditMode();
-        btn.textContent = 'Save Changes';
-        btn.disabled = false;
+        // If exam changed, redirect to dashboard to show new subjects immediately
+        const examChanged = newData.targetExam !== currentUserData.targetExam;
+
+        if (examChanged) {
+          // Redirect to dashboard to show updated subjects (Math for JEE, Biology for NEET)
+          window.location.href = '../pages/dashboard.html';
+        } else {
+          // Normal flow: reload profile data and exit edit mode
+          loadProfileData(currentUser, currentUserData);
+          exitEditMode();
+          btn.textContent = 'Save Changes';
+          btn.disabled = false;
+        }
       }
     );
 

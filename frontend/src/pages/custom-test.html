@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create custom mock tests on PrepMind AI - Choose subjects and difficulty">
+    <title>Custom Mock Test | PrepMind AI</title>
+    <style>
+        /* Prevent flash of unstyled content */
+        body {
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+    </style>
+    <link rel="stylesheet" href="../assets/css/performance.css">
+    <link rel="stylesheet" href="../assets/css/theme-transitions.css">
+    <link rel="stylesheet" href="../assets/css/theme-toggle.css">
+    <link rel="stylesheet" href="../assets/css/mocktest.css">
+    <link rel="stylesheet" href="../assets/css/info-modal.css">
+    <link rel="stylesheet" href="../assets/css/loading-modal.css">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="brand">Prep<span>Mind</span> AI</div>
+            <div class="nav-actions">
+                <div id="themeToggle"></div>
+                <div class="user-profile" id="userProfile">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-dropdown">
+                        <div class="dropdown-item" id="profileBtn">
+                            <span class="dropdown-icon">👤</span>
+                            <span>Profile</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item" id="dashboardBtn">
+                            <span class="dropdown-icon">📊</span>
+                            <span>Dashboard</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item" id="logoutBtn">
+                            <span class="dropdown-icon">🚪</span>
+                            <span>Logout</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Background Effects -->
+    <div class="background-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <!-- Main Custom Test Content -->
+    <main class="mocktest-container">
+        <!-- Header Section -->
+        <section class="mocktest-header">
+            <div class="header-content">
+                <h1 class="mocktest-title">Customize Your Mock Test 🎨</h1>
+                <p class="mocktest-subtitle">Create a personalized test with your choice of subjects and questions</p>
+            </div>
+        </section>
+
+        <!-- Configuration Form -->
+        <form id="customTestForm" class="custom-test-form">
+            <!-- Step 1: Subject Selection -->
+            <section class="config-section">
+                <h2 class="section-title">Select Subjects & Questions</h2>
+                <div class="subject-selection" id="subjectSelection">
+                    <!-- Dynamically populated based on exam type -->
+                </div>
+
+                <!-- Question Count - appears after subject selection -->
+                <div class="question-count-merged" id="questionCountMerged" style="display: none;">
+                    <div class="divider-line"></div>
+                    <div class="question-input-inline">
+                        <label for="questionsPerSubject" class="question-label-inline">
+                            <span class="label-icon">📝</span>
+                            Questions per subject:
+                        </label>
+                        <input type="number" id="questionsPerSubject" class="question-input-compact" min="5" max="100"
+                            value="30" step="5" required>
+                        <span class="question-hint-inline">(applies to all selected)</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2: Test Mode Selection -->
+            <section class="config-section" id="testModeSection" style="display: none;">
+                <h2 class="section-title">Choose Test Mode</h2>
+                <div class="mode-selection">
+                    <!-- PDF Generation Option -->
+                    <div class="mode-option">
+                        <label class="mode-label">
+                            <input type="radio" name="testMode" value="pdf" id="pdfModeRadio">
+                            <div class="mode-card">
+                                <div class="mode-icon">📄</div>
+                                <h3 class="mode-title">Generate PDF</h3>
+                                <p class="mode-description">Download a printable test paper</p>
+                            </div>
+                        </label>
+                        <div class="mode-suboptions" id="pdfOptions" style="display: none;">
+                            <label class="suboption-label">
+                                <input type="radio" name="pdfType" value="with-solutions">
+                                <span>📘 With Solutions</span>
+                            </label>
+                            <label class="suboption-label">
+                                <input type="radio" name="pdfType" value="without-solutions">
+                                <span>📄 Without Solutions</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Live Mock Test Option -->
+                    <div class="mode-option">
+                        <label class="mode-label">
+                            <input type="radio" name="testMode" value="live" id="liveModeRadio">
+                            <div class="mode-card">
+                                <div class="mode-icon">⏱️</div>
+                                <h3 class="mode-title">Live Mock Test</h3>
+                                <p class="mode-description">Take a timed test online</p>
+                            </div>
+                        </label>
+                        <div class="mode-suboptions" id="liveOptions" style="display: none;">
+                            <label class="suboption-label">
+                                <span>Test Duration:</span>
+                                <input type="number" id="testDuration" min="5" max="180" step="5" value="180"
+                                    placeholder="180">
+                                <span>minutes</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Submit Button -->
+            <div class="form-actions" id="formActions" style="display: none;">
+                <button type="button" class="btn-secondary" id="backBtn">← Back to Mock Tests</button>
+                <button type="submit" class="btn-primary" id="generateTestBtn">Generate Test →</button>
+            </div>
+        </form>
+    </main>
+
+    <script src="../js/utils/theme.js"></script>
+    <script type="module" src="../js/pages/custom-test.js"></script>
+    <script>
+        // Mark page as loaded immediately when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            requestAnimationFrame(() => document.body.classList.add('loaded'));
+        });
+    </script>
+</body>
+
+</html>

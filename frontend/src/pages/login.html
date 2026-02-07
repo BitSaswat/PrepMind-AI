@@ -4,7 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Login to PrepMind AI - Continue your exam preparation journey">
     <title>Login | PrepMind AI</title>
+    <style>
+        /* Prevent flash of unstyled content */
+        body {
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+    </style>
+    <link rel="stylesheet" href="../assets/css/performance.css">
     <link rel="stylesheet" href="../assets/css/theme-transitions.css">
     <link rel="stylesheet" href="../assets/css/theme-toggle.css">
     <link rel="stylesheet" href="../assets/css/style.css">
@@ -85,6 +98,12 @@
 
     <script src="../js/utils/theme.js"></script>
     <script type="module" src="../js/pages/auth.js"></script>
+    <script>
+        // Mark page as loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            requestAnimationFrame(() => document.body.classList.add('loaded'));
+        });
+    </script>
 </body>
 
 </html>

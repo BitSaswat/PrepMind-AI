@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading Modal Test</title>
+    <link rel="stylesheet" href="../src/assets/css/performance.css">
+    <link rel="stylesheet" href="../src/assets/css/theme-transitions.css">
+    <link rel="stylesheet" href="../src/assets/css/mocktest.css">
+    <link rel="stylesheet" href="../src/assets/css/loading-modal.css">
+    <style>
+        body {
+            padding: 40px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: var(--card-bg, white);
+            border-radius: 16px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .test-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 8px;
+            transition: all 0.25s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+
+        h2 {
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-container">
+        <h1>🧪 Loading Modal Test Suite</h1>
+        <p>Test all loading states and animations</p>
+
+        <div class="test-section">
+            <h2>1. Basic Loading</h2>
+            <p>Test basic loading modal with progress simulation</p>
+            <button class="test-button" onclick="testBasicLoading()">Test Basic Loading</button>
+        </div>
+
+        <div class="test-section">
+            <h2>2. Question Generation Flow</h2>
+            <p>Simulate the complete question generation flow</p>
+            <button class="test-button" onclick="testQuestionGeneration()">Test Question Generation</button>
+        </div>
+
+        <div class="test-section">
+            <h2>3. PDF Generation Flow</h2>
+            <p>Simulate PDF generation with multiple stages</p>
+            <button class="test-button" onclick="testPDFGeneration()">Test PDF Generation</button>
+        </div>
+
+        <div class="test-section">
+            <h2>4. Success State</h2>
+            <p>Test success animation and auto-hide</p>
+            <button class="test-button" onclick="testSuccess()">Test Success</button>
+        </div>
+
+        <div class="test-section">
+            <h2>5. Error State</h2>
+            <p>Test error animation with retry button</p>
+            <button class="test-button" onclick="testError()">Test Error</button>
+        </div>
+
+        <div class="test-section">
+            <h2>6. Progress Updates</h2>
+            <p>Test manual progress updates</p>
+            <button class="test-button" onclick="testProgressUpdates()">Test Progress Updates</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import {
+            showLoadingModal,
+            updateLoadingModal,
+            hideLoadingModal,
+            showSuccessModal,
+            showErrorModal,
+            setProgress,
+            setLoadingStatus
+        } from '../src/js/utils/loading-modal.js';
+
+        // Make functions global for onclick handlers
+        window.testBasicLoading = function () {
+            showLoadingModal('Loading...', 'Please wait while we process your request', 5000);
+        };
+
+        window.testQuestionGeneration = async function () {
+            showLoadingModal(
+                '🤖 Generating Questions...',
+                'AI is creating your custom questions',
+                8000
+            );
+            setLoadingStatus('Analyzing requirements...');
+
+            await sleep(2000);
+            setProgress(30);
+            updateLoadingModal(
+                '🤖 Generating Questions...',
+                'Calling AI model...'
+            );
+            setLoadingStatus('Generating questions for Physics...');
+
+            await sleep(2000);
+            setProgress(70);
+            updateLoadingModal(
+                '🤖 Generating Questions...',
+                'Parsing and validating questions...'
+            );
+            setLoadingStatus('Validating question quality...');
+
+            await sleep(2000);
+            setProgress(100);
+            hideLoadingModal();
+
+            setTimeout(() => {
+                showSuccessModal(
+                    '✅ Questions Generated!',
+                    '30 high-quality questions created successfully',
+                    2000
+                );
+            }, 300);
+        };
+
+        window.testPDFGeneration = async function () {
+            showLoadingModal(
+                '🤖 Generating Questions...',
+                'Creating 30 custom questions for JEE',
+                8000
+            );
+            setLoadingStatus('AI is analyzing your requirements...');
+
+            await sleep(2000);
+            setProgress(20);
+            setLoadingStatus('Calling AI model...');
+
+            await sleep(2000);
+            setProgress(50);
+            updateLoadingModal(
+                '📄 Creating PDF...',
+                'Formatting your test paper with beautiful design'
+            );
+            setLoadingStatus('Generating PDF document...');
+
+            await sleep(2000);
+            setProgress(80);
+            setLoadingStatus('Adding questions and formatting...');
+
+            await sleep(1500);
+            setProgress(95);
+            setLoadingStatus('Finalizing PDF...');
+
+            await sleep(1000);
+            setProgress(100);
+            hideLoadingModal();
+
+            setTimeout(() => {
+                showSuccessModal(
+                    '✅ PDF Generated!',
+                    'Your test with 30 questions has been downloaded successfully!',
+                    3000
+                );
+            }, 300);
+        };
+
+        window.testSuccess = function () {
+            showSuccessModal(
+                '✅ Success!',
+                'Operation completed successfully',
+                3000
+            );
+        };
+
+        window.testError = function () {
+            showErrorModal(
+                '❌ Error Occurred',
+                'Failed to generate questions. Please check your connection and try again.',
+                () => {
+                    hideLoadingModal();
+                    alert('Retry clicked! This would restart the operation.');
+                }
+            );
+        };
+
+        window.testProgressUpdates = async function () {
+            showLoadingModal('Processing...', 'Starting operation', 0);
+
+            for (let i = 0; i <= 100; i += 10) {
+                await sleep(500);
+                setProgress(i);
+                setLoadingStatus(`Processing step ${i / 10 + 1} of 11...`);
+            }
+
+            hideLoadingModal();
+            setTimeout(() => {
+                showSuccessModal('✅ Complete!', 'All steps finished', 2000);
+            }, 300);
+        };
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+
+</html>

@@ -38,6 +38,7 @@ firebase-debug.log*
 
 # AI GIT IGNORE
 .env
-venv
+venv/
+backend/logs/
 __pycache__/
-
+*.log

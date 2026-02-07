@@ -1,0 +1,19 @@
+# Python dependencies for AI generation module
+# Install with: pip install -r requirements.txt
+
+# Core dependencies
+python-dotenv==1.0.0
+langchain-google-genai==2.0.5
+reportlab==4.2.5
+
+# Optional dependencies for testing
+# pytest==8.3.4
+# pytest-cov==6.0.0
+# pytest-mock==3.14.0
+
+# Type checking (optional)
+# mypy==1.13.0
+
+# Code quality (optional)
+# pylint==3.3.3
+# black==24.10.0
