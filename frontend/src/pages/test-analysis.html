@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Detailed test analysis and performance review">
+    <title>Test Analysis | PrepMind AI</title>
+    <style>
+        body {
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+    </style>
+    <link rel="stylesheet" href="../assets/css/performance.css">
+    <link rel="stylesheet" href="../assets/css/theme-transitions.css">
+    <link rel="stylesheet" href="../assets/css/theme-toggle.css">
+    <link rel="stylesheet" href="../assets/css/test-analysis.css">
+
+    <!-- MathJax for LaTeX rendering -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="analysis-header">
+        <div class="header-left">
+            <div class="brand">Prep<span>Mind</span> AI</div>
+            <div class="test-info">
+                <span id="examType">JEE Main</span>
+                <span class="divider">|</span>
+                <span id="testDate">Analysis</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="btn-secondary" id="backBtn">← Back to Dashboard</button>
+            <div id="themeToggle" class="theme-toggle-mini"></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="analysis-container">
+        <!-- Performance Overview Section -->
+        <section class="overview-section">
+            <h2 class="section-title">📊 Performance Overview</h2>
+
+            <div class="overview-grid">
+                <!-- Score Card -->
+                <div class="stat-card score-card">
+                    <div class="card-icon">🎯</div>
+                    <div class="card-content">
+                        <span class="card-label">Your Score</span>
+                        <span class="card-value" id="totalScore">0/100</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="scoreProgress"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accuracy Card -->
+                <div class="stat-card accuracy-card">
+                    <div class="card-icon">✓</div>
+                    <div class="card-content">
+                        <span class="card-label">Accuracy</span>
+                        <span class="card-value" id="accuracy">0%</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="accuracyProgress"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Time Card -->
+                <div class="stat-card time-card">
+                    <div class="card-icon">⏱️</div>
+                    <div class="card-content">
+                        <span class="card-label">Time Taken</span>
+                        <span class="card-value" id="timeTaken">00:00</span>
+                        <span class="card-subtext" id="avgTime">Avg: 0s/question</span>
+                    </div>
+                </div>
+
+                <!-- Attempt Rate Card -->
+                <div class="stat-card attempt-card">
+                    <div class="card-icon">📝</div>
+                    <div class="card-content">
+                        <span class="card-label">Attempt Rate</span>
+                        <span class="card-value" id="attemptRate">0%</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="attemptProgress"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="charts-grid">
+                <!-- Pie Chart -->
+                <div class="chart-card">
+                    <h3 class="chart-title">Question Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <span class="legend-dot correct"></span>
+                            <span id="correctCount">0</span> Correct
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot wrong"></span>
+                            <span id="wrongCount">0</span> Wrong
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot skipped"></span>
+                            <span id="skippedCount">0</span> Skipped
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bar Chart -->
+                <div class="chart-card">
+                    <h3 class="chart-title">Subject-wise Performance</h3>
+                    <div class="chart-container">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Insights Section -->
+        <section class="insights-section">
+            <h2 class="section-title">💡 Insights & Recommendations</h2>
+            <div class="insights-grid">
+                <div class="insight-card strengths">
+                    <div class="insight-header">
+                        <span class="insight-icon">💪</span>
+                        <h3>Strengths</h3>
+                    </div>
+                    <ul id="strengthsList"></ul>
+                </div>
+                <div class="insight-card weaknesses">
+                    <div class="insight-header">
+                        <span class="insight-icon">📚</span>
+                        <h3>Areas to Improve</h3>
+                    </div>
+                    <ul id="weaknessesList"></ul>
+                </div>
+                <div class="insight-card recommendations">
+                    <div class="insight-header">
+                        <span class="insight-icon">🎓</span>
+                        <h3>Recommendations</h3>
+                    </div>
+                    <ul id="recommendationsList"></ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Question Review Section -->
+        <section class="review-section">
+            <div class="review-header">
+                <h2 class="section-title">📝 Question-by-Question Review</h2>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="correct">Correct</button>
+                    <button class="filter-btn" data-filter="wrong">Wrong</button>
+                    <button class="filter-btn" data-filter="skipped">Skipped</button>
+                </div>
+            </div>
+
+            <div class="questions-container" id="questionsContainer">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/utils/theme.js"></script>
+    <script type="module" src="../js/pages/test-analysis.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            requestAnimationFrame(() => document.body.classList.add('loaded'));
+        });
+    </script>
+</body>
+
+</html>

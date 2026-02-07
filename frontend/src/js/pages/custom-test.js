@@ -537,13 +537,8 @@ async function handleLiveTest(config) {
                 // TODO: Create live-test.html page
                 // For now, show info modal
                 hideLoadingModal();
-                showInfoModal(
-                    'Live Test Interface Coming Soon! ⏱️',
-                    `Your test with ${totalQuestions} questions has been generated!\n\n` +
-                    `📚 Subjects: ${subjectList}\n` +
-                    `⏱️ Duration: ${config.duration} minutes\n\n` +
-                    `The live test interface is being developed. Your test has been saved and will be available soon!`
-                );
+                // Redirect to the new Live Test page
+                window.location.href = '../pages/live-test.html';
             }, 1500);
         }, 300);
 

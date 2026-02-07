@@ -6,7 +6,7 @@ An intelligent exam preparation platform that generates personalized questions a
 - **AI Question Generation**: Generates JEE/NEET questions for Physics, Chemistry, and Math.
 - **PDF Export**: Creates professional "Question Paper" and "With Solutions" PDFs.
 - **Smart Retries**: Handles API rate limits automatically.
-- **Vertex AI Integration**: Uses `gemini-2.5-pro` for high-quality content.
+- **Vertex AI Integration**: Uses `gemini-2.5-flash` for fast, high-quality content generation.
 
 ## Setup
 

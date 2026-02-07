@@ -10,7 +10,7 @@ from typing import Final
 # ============================================
 
 # Model settings
-DEFAULT_MODEL: Final[str] = "gemini-2.5-pro"  # Updated to user-requested modelni-3-flash-preview
+DEFAULT_MODEL: Final[str] = "gemini-2.5-flash"  # Updated to gemini-2.5-flash for faster responses
 DEFAULT_TEMPERATURE: Final[float] = 0.4
 MAX_TOKENS: Final[int] = 8192
 TOP_P: Final[float] = 0.95

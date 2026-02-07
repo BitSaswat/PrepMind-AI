@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Take a live AI-generated mock test">
+    <title>Live Test | PrepMind AI</title>
+    <style>
+        body {
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+    </style>
+    <link rel="stylesheet" href="../assets/css/performance.css">
+    <link rel="stylesheet" href="../assets/css/theme-transitions.css">
+    <link rel="stylesheet" href="../assets/css/theme-toggle.css">
+    <link rel="stylesheet" href="../assets/css/live-test.css">
+    <link rel="stylesheet" href="../assets/css/confirm-modal.css">
+    <link rel="stylesheet" href="../assets/css/loading-modal.css">
+    <link rel="stylesheet" href="../assets/css/info-modal.css">
+
+    <!-- MathJax for LaTeX rendering -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <header class="test-header">
+        <div class="header-left">
+            <div class="brand">Prep<span>Mind</span> AI</div>
+            <div class="test-info" id="testInfo">
+                <span id="examName">Loading...</span>
+                <span class="divider">|</span>
+                <span id="subjectName">Loading...</span>
+            </div>
+        </div>
+
+        <div class="header-center">
+            <div class="timer-container" id="timerContainer">
+                <span class="timer-icon">⏱️</span>
+                <span id="timerDisplay">00:00:00</span>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <button class="btn-submit" id="submitTestBtn">Submit Test</button>
+            <div id="themeToggle" class="theme-toggle-mini"></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="test-container">
+        <!-- Question Section (Left) -->
+        <section class="question-section">
+            <div class="question-header">
+                <div class="q-meta">
+                    <span class="q-number">Question <span id="currentQNum">1</span></span>
+                    <span class="q-marks">+4, -1</span>
+                </div>
+                <div class="q-actions-top">
+                    <!-- Dynamic Subject Tabs -->
+                    <div class="subject-tabs" id="subjectTabs">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-content" id="questionContent">
+                <!-- Question Text -->
+                <div class="q-text" id="qText"> Loading question... </div>
+
+                <!-- Options -->
+                <div class="options-grid" id="optionsGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <div class="question-footer">
+                <div class="nav-buttons">
+                    <button class="btn-nav" id="prevBtn" disabled>← Previous</button>
+                    <button class="btn-nav" id="markReviewBtn">Mark for Review 🔖</button>
+                    <button class="btn-nav" id="clearResponseBtn">Clear Response 🧹</button>
+                    <button class="btn-primary" id="nextBtn">Save & Next →</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Question Palette (Right) -->
+        <aside class="palette-section">
+            <div class="palette-header">
+                <h3>Question Palette</h3>
+            </div>
+
+            <div class="palette-legend">
+                <div class="legend-item"><span class="dot answered"></span> Answered</div>
+                <div class="legend-item"><span class="dot not-answered"></span> Not Answered</div>
+                <div class="legend-item"><span class="dot marked"></span> Marked</div>
+                <div class="legend-item"><span class="dot not-visited"></span> Not Visited</div>
+            </div>
+
+            <div class="palette-grid" id="paletteGrid">
+                <!-- Populated by JS -->
+            </div>
+
+            <div class="palette-footer">
+                <div class="user-info">
+                    <div class="user-avatar-mini" id="userAvatar">U</div>
+                    <span id="userName">Student</span>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Confirm Submit Modal -->
+    <div id="confirmModal" class="confirm-modal-overlay" style="display: none;">
+        <div class="confirm-modal">
+            <div class="confirm-modal-icon">⚠️</div>
+            <h3>Submit Test?</h3>
+            <p>Are you sure you want to submit the test? You cannot change your answers after submission.</p>
+            <div class="confirm-modal-actions">
+                <button class="confirm-btn confirm-btn-cancel" id="confirmCancelBtn">Cancel</button>
+                <button class="confirm-btn confirm-btn-submit" id="confirmSubmitBtn">Submit Test</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Modal (Hidden by default) -->
+    <div id="resultModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content result-modal">
+            <h2>Test Submitted Successfully! 🎉</h2>
+
+            <div class="score-summary">
+                <div class="score-card">
+                    <span class="score-label">Total Score</span>
+                    <span class="score-value" id="finalScore">0/0</span>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item correct">
+                        <span class="stat-val" id="correctCount">0</span>
+                        <span class="stat-lbl">Correct</span>
+                    </div>
+                    <div class="stat-item wrong">
+                        <span class="stat-val" id="wrongCount">0</span>
+                        <span class="stat-lbl">Wrong</span>
+                    </div>
+                    <div class="stat-item skipped">
+                        <span class="stat-val" id="skippedCount">0</span>
+                        <span class="stat-lbl">Skipped</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-secondary" id="restartBtn">Back to Dashboard</button>
+                <button class="btn-primary" id="viewAnalysisBtn">View Detailed Analysis</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/utils/theme.js"></script>
+    <script type="module" src="../js/pages/live-test.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            requestAnimationFrame(() => document.body.classList.add('loaded'));
+        });
+    </script>
+</body>
+
+</html>
