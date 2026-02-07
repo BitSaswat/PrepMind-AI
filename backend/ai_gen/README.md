@@ -84,6 +84,19 @@ Create a `.env` file in the backend directory:
 GEMINI_API_KEY=your_api_key_here
 ```
 
+## Manual PDF Generation
+
+To generate a sample PDF manually without running the full backend server:
+
+1. Ensure your `.env` file is set up with a valid `GEMINI_API_KEY`.
+2. Run the generator script:
+```bash
+cd /Users/om/prep_mind_ai/PrepMind-AI/backend
+python run_generator.py
+```
+This will create a `generated_exam.pdf` file in the backend directory.
+
+
 ## Troubleshooting
 
 ### ModuleNotFoundError: No module named 'dotenv'

@@ -10,15 +10,16 @@ from typing import Final
 # ============================================
 
 # Model settings
-DEFAULT_MODEL: Final[str] = "gemini-3-flash-preview"  # Changed to flash for free tier
+DEFAULT_MODEL: Final[str] = "gemini-2.5-pro"  # Updated to user-requested modelni-3-flash-preview
 DEFAULT_TEMPERATURE: Final[float] = 0.4
 MAX_TOKENS: Final[int] = 8192
 TOP_P: Final[float] = 0.95
 TOP_K: Final[int] = 40
 
 # API settings
-API_TIMEOUT: Final[int] = 60  # seconds
-MAX_RETRIES: Final[int] = 3
+API_TIMEOUT: Final[int] = 120  # seconds
+DEFAULT_LOCATION: Final[str] = "us-central1"
+MAX_RETRIES: Final[int] = 10
 RETRY_DELAY: Final[float] = 1.0  # seconds
 RETRY_BACKOFF_FACTOR: Final[float] = 2.0  # exponential backoff multiplier
 

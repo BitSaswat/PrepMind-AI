@@ -59,7 +59,7 @@ def output_error(error: str, details: Dict[str, Any] = None) -> None:
         error_data["details"] = details
     
     output_json(error_data)
-    sys.exit(1)
+    sys.exit(0)
 
 
 def cmd_generate_questions(args) -> None:

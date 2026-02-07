@@ -45,6 +45,16 @@ def generate_questions(
     
     # Validate exam type
     validate_exam_type(exam)
+
+    # Import syllabus for default chapters
+    from .exam_config import SYLLABUS
+
+    # Pre-process subject data: if chapters is empty, use all chapters
+    for subject, data in subject_data.items():
+        if not data.get("chapters"):
+            logger.info(f"No chapters specified for {subject}, using full syllabus")
+            if exam in SYLLABUS and subject in SYLLABUS[exam]:
+                data["chapters"] = SYLLABUS[exam][subject]
     
     # Validate all subject configurations first
     for subject, data in subject_data.items():
@@ -62,7 +72,9 @@ def generate_questions(
     question_id = 0
     total_start_time = time.time()
     
-    # Generate questions for each subject
+
+
+    # Validate all subject configurations first
     for subject, data in subject_data.items():
         logger.info(f"Generating {data['num_questions']} questions for {subject}")
         subject_start_time = time.time()

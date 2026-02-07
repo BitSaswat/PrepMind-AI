@@ -1,0 +1,10 @@
+{
+    "exam": "JEE",
+    "subject_data": {
+        "Mathematics": {
+            "chapters": [],
+            "num_questions": 2,
+            "difficulty": "Medium"
+        }
+    }
+}

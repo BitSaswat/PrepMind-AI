@@ -7,11 +7,12 @@ import os
 import time
 from typing import Optional
 from dotenv import load_dotenv
-from langchain_google_genai import ChatGoogleGenerativeAI
+from google import genai
+from google.genai import types
 
 from .logger import get_logger
 from .constants import (
-    DEFAULT_MODEL, DEFAULT_TEMPERATURE, API_TIMEOUT,
+    DEFAULT_MODEL, DEFAULT_TEMPERATURE, DEFAULT_LOCATION, API_TIMEOUT,
     MAX_RETRIES, RETRY_DELAY, RETRY_BACKOFF_FACTOR,
     ERROR_API_KEY_MISSING
 )
@@ -29,7 +30,7 @@ load_dotenv()
 
 class LLMService:
     """
-    Service class for interacting with LLM API.
+    Service class for interacting with LLM API via Vertex AI (google-genai).
     Handles initialization, API calls, retries, and error handling.
     """
     
@@ -37,7 +38,7 @@ class LLMService:
         self,
         model: str = DEFAULT_MODEL,
         temperature: float = DEFAULT_TEMPERATURE,
-        api_key: Optional[str] = None
+        location: str = DEFAULT_LOCATION
     ):
         """
         Initialize LLM service.
@@ -45,32 +46,29 @@ class LLMService:
         Args:
             model: Model name to use
             temperature: Temperature for generation (0.0 to 1.0)
-            api_key: Optional API key (if not provided, loads from env)
-            
-        Raises:
-            ConfigurationError: If API key is missing
+            location: Vertex AI location
         """
         self.model = model
         self.temperature = temperature
+        self.location = location
         
-        # Get API key
-        self.api_key = api_key or os.getenv("GEMINI_API_KEY")
-        if not self.api_key:
-            logger.error("GEMINI_API_KEY not found in environment")
-            raise ConfigurationError(ERROR_API_KEY_MISSING, config_key="GEMINI_API_KEY")
+        # Get Project ID
+        self.project_id = os.getenv("GOOGLE_CLOUD_PROJECT")
+        if not self.project_id:
+            logger.error("GOOGLE_CLOUD_PROJECT not found in environment")
+            raise ConfigurationError("GOOGLE_CLOUD_PROJECT not found in environment")
         
-        # Initialize LLM
+        # Initialize Vertex AI Client
         try:
-            self.llm = ChatGoogleGenerativeAI(
-                model=self.model,
-                google_api_key=self.api_key,
-                temperature=self.temperature,
-                timeout=API_TIMEOUT
+            self.client = genai.Client(
+                vertexai=True,
+                project=self.project_id,
+                location=self.location
             )
-            logger.info(f"LLM Service initialized with model: {self.model}, temperature: {self.temperature}")
+            logger.info(f"LLM Service initialized (Vertex AI) with model: {self.model}, project: {self.project_id}")
         except Exception as e:
-            logger.error(f"Failed to initialize LLM: {str(e)}")
-            raise ConfigurationError(f"Failed to initialize LLM: {str(e)}")
+            logger.error(f"Failed to initialize Vertex AI Client: {str(e)}")
+            raise ConfigurationError(f"Failed to initialize Vertex AI Client: {str(e)}")
     
     def call(
         self,
@@ -91,32 +89,37 @@ class LLMService:
             
         Raises:
             LLMServiceError: If all retry attempts fail
-            RateLimitError: If rate limit is exceeded
-            AITimeoutError: If request times out
         """
         logger.debug(f"Calling LLM with prompt length: {len(prompt)} chars")
         
         last_exception = None
         current_delay = retry_delay
         
+        # Configuration for generation
+        config = types.GenerateContentConfig(
+            temperature=self.temperature,
+            candidate_count=1
+        )
+        
         for attempt in range(max_retries):
             try:
                 start_time = time.time()
                 
-                # Make API call
-                response = self.llm.invoke(prompt)
+                # Make API call using Vertex AI Client
+                response = self.client.models.generate_content(
+                    model=self.model,
+                    contents=prompt,
+                    config=config
+                )
                 
                 duration = time.time() - start_time
                 logger.info(f"LLM call successful (attempt {attempt + 1}/{max_retries}, {duration:.2f}s)")
                 
                 # Validate response
-                if not response or not hasattr(response, 'content'):
-                    raise APIError("Invalid response from LLM: missing content")
+                if not response or not response.text:
+                    raise APIError("Invalid response from LLM: empty text")
                 
-                response_text = response.content
-                if not response_text or not isinstance(response_text, str):
-                    raise APIError("Invalid response from LLM: empty or non-string content")
-                
+                response_text = response.text
                 logger.debug(f"Response length: {len(response_text)} chars")
                 return response_text
                 
@@ -125,21 +128,31 @@ class LLMService:
                 error_msg = str(e).lower()
                 
                 # Check for rate limiting
-                if "rate limit" in error_msg or "quota" in error_msg:
+                if "429" in error_msg or "rate limit" in error_msg or "quota" in error_msg or "resource exhausted" in error_msg:
                     logger.warning(f"Rate limit hit on attempt {attempt + 1}/{max_retries}")
+                    
+                    # Try to extract wait time from error message
+                    import re
+                    wait_time = current_delay
+                    match = re.search(r"retry in (\d+(\.\d+)?)s", error_msg)
+                    if match:
+                        wait_time = float(match.group(1)) + 1.0  # Add 1s buffer
+                        logger.info(f"API requested wait of {wait_time:.2f}s")
+                    
                     if attempt < max_retries - 1:
-                        logger.info(f"Retrying after {current_delay}s...")
-                        time.sleep(current_delay)
-                        current_delay *= RETRY_BACKOFF_FACTOR
+                        sleep_time = max(wait_time, current_delay)
+                        logger.info(f"Retrying after {sleep_time:.2f}s...")
+                        time.sleep(sleep_time)
+                        current_delay = max(current_delay * RETRY_BACKOFF_FACTOR, sleep_time)
                         continue
                     else:
                         raise RateLimitError(
                             f"Rate limit exceeded after {max_retries} attempts",
-                            retry_after=int(current_delay)
+                            retry_after=int(wait_time)
                         )
                 
                 # Check for timeout
-                elif "timeout" in error_msg:
+                elif "timeout" in error_msg or "504" in error_msg:
                     logger.warning(f"Request timeout on attempt {attempt + 1}/{max_retries}")
                     if attempt < max_retries - 1:
                         logger.info(f"Retrying after {current_delay}s...")
@@ -162,7 +175,7 @@ class LLMService:
                             f"LLM call failed after {max_retries} attempts: {str(e)}"
                         )
         
-        # Should not reach here, but just in case
+        # Should not reach here
         raise LLMServiceError(
             f"LLM call failed after {max_retries} attempts",
             details={"last_error": str(last_exception)}

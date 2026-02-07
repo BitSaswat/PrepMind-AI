@@ -144,7 +144,9 @@ function simulateProgress(duration) {
 export function hideLoadingModal() {
     if (!loadingOverlay) return;
 
-    loadingOverlay.classList.remove('active');
+    if (loadingOverlay) {
+        loadingOverlay.classList.remove('active');
+    }
 
     // Clean up after animation
     setTimeout(() => {

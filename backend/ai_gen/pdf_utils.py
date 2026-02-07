@@ -167,17 +167,37 @@ def generate_answer_pdf(
             c.drawString(PDF_MARGIN_LEFT, y, subject)
             y -= PDF_SECTION_SPACING
             
-            # Draw answers
+            # Draw full Q&A
             c.setFont(PDF_FONT_BODY, PDF_FONT_SIZE_BODY)
             for question in questions:
-                # Check page space
-                if y < PDF_MARGIN_BOTTOM + 120:
+                # Check page space (need more space now for full question context)
+                if y < PDF_MARGIN_BOTTOM + 200:
                     c.showPage()
                     y = height - PDF_MARGIN_TOP
                     c.setFont(PDF_FONT_BODY, PDF_FONT_SIZE_BODY)
                 
-                # Draw question number and answer
-                answer_text = f"{question_number}. Answer: {question['correct']}"
+                # Draw question text with wrapping
+                question_text = f"{question_number}. {question['question']}"
+                y = _draw_wrapped_text(
+                    c, question_text, PDF_MARGIN_LEFT, y,
+                    PDF_MAX_LINE_WIDTH, PDF_LINE_HEIGHT
+                )
+                y -= 5
+                
+                # Draw options
+                for opt_key in ["A", "B", "C", "D"]:
+                    if opt_key in question.get("options", {}):
+                        option_text = f"   {opt_key}) {question['options'][opt_key]}"
+                        y = _draw_wrapped_text(
+                            c, option_text, PDF_MARGIN_LEFT + 20, y,
+                            PDF_MAX_LINE_WIDTH - 20, PDF_LINE_HEIGHT
+                        )
+                        y -= 3
+                
+                y -= 5
+
+                # Draw Answer
+                answer_text = f"   Answer: {question['correct']}"
                 c.drawString(PDF_MARGIN_LEFT, y, answer_text)
                 y -= PDF_LINE_HEIGHT
                 
