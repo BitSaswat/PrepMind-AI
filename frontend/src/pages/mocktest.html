@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="../assets/css/theme-toggle.css">
     <link rel="stylesheet" href="../assets/css/mocktest.css">
     <link rel="stylesheet" href="../assets/css/info-modal.css">
+    <link rel="stylesheet" href="../assets/css/loading-modal.css">
 </head>
 
 <body>
@@ -83,7 +84,7 @@
                     <div class="test-details">
                         <div class="detail-item">
                             <span class="detail-icon">⏱️</span>
-                            <span class="detail-text">3 Hours</span>
+                            <span class="detail-text" id="fullTestDuration">3 Hours</span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-icon">📚</span>
@@ -91,7 +92,7 @@
                         </div>
                         <div class="detail-item">
                             <span class="detail-icon">❓</span>
-                            <span class="detail-text">90 Questions</span>
+                            <span class="detail-text" id="fullTestQuestions">90 Questions</span>
                         </div>
                     </div>
                     <button class="test-btn">Start Test</button>
@@ -127,7 +128,7 @@
                     <div class="test-details">
                         <div class="detail-item">
                             <span class="detail-icon">⏱️</span>
-                            <span class="detail-text">3 Hours</span>
+                            <span class="detail-text" id="pyqTestDuration">3 Hours</span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-icon">📚</span>
@@ -135,7 +136,7 @@
                         </div>
                         <div class="detail-item">
                             <span class="detail-icon">❓</span>
-                            <span class="detail-text">90 Questions</span>
+                            <span class="detail-text" id="pyqTestQuestions">90 Questions</span>
                         </div>
                     </div>
                     <button class="test-btn">Start Test</button>

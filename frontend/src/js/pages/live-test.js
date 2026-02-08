@@ -1,6 +1,19 @@
 import { auth } from '../config/firebase-config.js';
+import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    updateDoc,
+    collection,
+    addDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { showInfoModal } from '../utils/info-modal.js';
+
+const db = getFirestore();
+
 
 // --- State Management ---
 let currentState = {
@@ -219,6 +232,11 @@ function renderOptions(question) {
             grid.appendChild(el);
         }
     });
+
+    // Re-render MathJax for the new options
+    if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([grid]).catch(err => console.log('MathJax error:', err));
+    }
 }
 
 function selectOption(qId, optKey) {
@@ -235,7 +253,9 @@ function selectOption(qId, optKey) {
 
 function formatText(text) {
     if (!text) return '';
-    return text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+    return text.replace(/\n/g, '<br>')
+        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+        .replace(/\*([^\*]+)\*/g, '<i>$1</i>'); // Support italics
 }
 
 function jumpToSubject(subject) {
@@ -267,7 +287,7 @@ function updateTimerDisplay() {
     const m = Math.floor((currentState.timeLeft % 3600) / 60);
     const s = currentState.timeLeft % 60;
 
-    const display = `${pad(h)}:${pad(m)}:${pad(s)}`;
+    const display = `${pad(h)}:${pad(m)}:${pad(s)} `;
     document.getElementById('timerDisplay').textContent = display;
 
     const container = document.getElementById('timerContainer');
@@ -409,7 +429,7 @@ function submitTest(auto) {
             userAnswer: userAns || null,
             status: status,
             subject: q.subject,
-            solution: q.explanation || q.solution || `The correct answer is ${q.correct}. ${q.options[q.correct]}`
+            solution: q.explanation || q.solution || `The correct answer is ${q.correct}. ${q.options[q.correct]} `
         });
     });
 
@@ -435,6 +455,14 @@ function submitTest(auto) {
 
     sessionStorage.setItem('testResults', JSON.stringify(testResults));
 
+    // Update user statistics in Firestore (Always update for any attempt)
+    try {
+        updateUserStats(timeTaken);
+        saveTestResults(testResults, totalScore);
+    } catch (e) {
+        console.error("Stats update failed trigger:", e);
+    }
+
     // Show Results
     document.getElementById('finalScore').textContent = `${totalScore}/${currentState.questions.length * MARKS.CORRECT}`;
     document.getElementById('correctCount').textContent = correct;
@@ -449,4 +477,107 @@ function submitTest(auto) {
             modal.classList.add('active');
         });
     });
+}
+
+// Update user statistics in Firestore
+async function updateUserStats(timeTaken) {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    try {
+        const statsRef = doc(db, 'users', user.uid, 'stats', 'summary');
+        const statsDoc = await getDoc(statsRef);
+
+        const today = new Date().toISOString().split('T')[0];
+        const hoursFromTest = timeTaken / 3600;
+
+        let stats = {
+            currentStreak: 1,
+            longestStreak: 1,
+            lastTestDate: today,
+            totalHoursStudied: hoursFromTest,
+            bestDailyHours: hoursFromTest,
+            totalTestsCompleted: 1,
+            bestDailyTests: 1,
+            today: {
+                date: today,
+                testsCompleted: 1,
+                hoursStudied: hoursFromTest
+            }
+        };
+
+        if (statsDoc.exists()) {
+            const existing = statsDoc.data();
+
+            // Streak
+            const lastDate = existing.lastTestDate || '';
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+            if (lastDate === yesterdayStr) {
+                stats.currentStreak = (existing.currentStreak || 0) + 1;
+            } else if (lastDate === today) {
+                stats.currentStreak = existing.currentStreak || 1;
+            } else {
+                stats.currentStreak = 1;
+            }
+            stats.longestStreak = Math.max(stats.currentStreak, existing.longestStreak || 0);
+
+            // Totals
+            stats.totalHoursStudied = (existing.totalHoursStudied || 0) + hoursFromTest;
+            stats.totalTestsCompleted = (existing.totalTestsCompleted || 0) + 1;
+
+            // Daily & Best
+            if (existing.today && existing.today.date === today) {
+                stats.today = {
+                    date: today,
+                    testsCompleted: (existing.today.testsCompleted || 0) + 1,
+                    hoursStudied: (existing.today.hoursStudied || 0) + hoursFromTest
+                };
+            } else {
+                stats.today = {
+                    date: today,
+                    testsCompleted: 1,
+                    hoursStudied: hoursFromTest
+                };
+            }
+            stats.bestDailyHours = Math.max(stats.today.hoursStudied, existing.bestDailyHours || 0);
+            stats.bestDailyTests = Math.max(stats.today.testsCompleted, existing.bestDailyTests || 0);
+            stats.lastTestDate = today;
+        }
+
+        await setDoc(statsRef, stats);
+
+    } catch (error) {
+        console.error('Error updating stats:', error);
+    }
+}
+
+// Save detailed test results to history collection
+async function saveTestResults(results, score) {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    try {
+        const historyRef = collection(db, 'users', user.uid, 'testHistory');
+
+        // Prepare simplified history object
+        const historyEntry = {
+            testId: results.testId || 'unknown',
+            testTitle: results.examType ? `${results.examType} Mock Test` : 'Custom Test',
+            score: score,
+            totalMarks: results.questions.length * MARKS.CORRECT,
+            percentage: Math.round((score / (results.questions.length * MARKS.CORRECT)) * 100),
+            date: new Date().toISOString(),
+            createdAt: serverTimestamp(),
+            timeTaken: results.timeTaken || 0,
+            subject: results.subject || 'Mixed'
+        };
+
+        await addDoc(historyRef, historyEntry);
+        console.log('✅ Test history saved:', historyEntry);
+    } catch (error) {
+        console.error('❌ Error saving test history:', error);
+    }
 }

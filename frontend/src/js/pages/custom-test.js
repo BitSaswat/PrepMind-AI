@@ -31,7 +31,8 @@ const EXAM_SUBJECTS = {
     NEET: [
         { name: 'Physics', icon: '⚛️' },
         { name: 'Chemistry', icon: '🧪' },
-        { name: 'Biology', icon: '🧬' }
+        { name: 'Botany', icon: '🌿' },
+        { name: 'Zoology', icon: '🦁' }
     ]
 };
 
@@ -343,8 +344,8 @@ async function handlePdfGeneration(config) {
     try {
         // Show loading modal
         showLoadingModal(
-            '🤖 Generating Questions...',
-            `Creating ${totalQuestions} custom questions for ${config.examType}`,
+            'Analyzing Requirements',
+            `Designing a unique ${config.examType} custom test for you`,
             8000
         );
         setLoadingStatus('AI is analyzing your requirements...');

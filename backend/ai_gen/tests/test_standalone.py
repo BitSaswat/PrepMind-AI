@@ -101,7 +101,7 @@ def test_exam_validation_logic():
 def test_subject_validation_logic():
     """Test subject validation logic."""
     jee_subjects = ["Physics", "Chemistry", "Mathematics"]
-    neet_subjects = ["Physics", "Chemistry", "Biology"]
+    neet_subjects = ["Physics", "Chemistry", "Botany", "Zoology"]
     
     # JEE subjects
     assert "Physics" in jee_subjects
@@ -110,7 +110,8 @@ def test_subject_validation_logic():
     
     # NEET subjects
     assert "Physics" in neet_subjects
-    assert "Biology" in neet_subjects
+    assert "Botany" in neet_subjects
+    assert "Zoology" in neet_subjects
     assert "Mathematics" not in neet_subjects
     
     print("✓ Subject validation logic passed")

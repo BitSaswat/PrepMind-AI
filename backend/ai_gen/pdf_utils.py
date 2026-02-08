@@ -370,8 +370,17 @@ def _clean_latex(text: str) -> str:
         r'\\subseteq': '⊆', r'\\supset': '⊃', r'\\supseteq': '⊇',
         r'\\cup': '∪', r'\\cap': '∩', r'\\emptyset': '∅',
         r'\\forall': '∀', r'\\exists': '∃', r'\\neg': '¬',
-        r'\\land': '∧', r'\\lor': '∨', r'\\implies': '⇒'
+        r'\\land': '∧', r'\\lor': '∨', r'\\implies': '⇒',
+        
+        # Spacing and accents
+        r'\\,': ' ', r'\\;': ' ', r'\\:': ' ', r'\\ ': ' ',
+        r'\\quad': '  ', r'\\qquad': '    '
     }
+    
+    # Pre-clean text commands
+    cleaned = re.sub(r'\\textrm\{([^}]+)\}', r'\1', cleaned)
+    cleaned = re.sub(r'\\textit\{([^}]+)\}', r'\1', cleaned)
+    cleaned = re.sub(r'\\textbf\{([^}]+)\}', r'\1', cleaned)
     
     # Combine all replacements
     all_replacements = {**greek_replacements, **math_replacements, 
@@ -402,6 +411,9 @@ def _clean_latex(text: str) -> str:
     
     # Remove remaining backslashes
     cleaned = re.sub(r'\\(?![a-zA-Z])', '', cleaned)
+    
+    # Remove markdown bold/italics
+    cleaned = re.sub(r'\*+', '', cleaned)
     
     return cleaned
 

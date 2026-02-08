@@ -136,22 +136,33 @@ SYLLABUS: Dict[str, Dict[str, List[str]]] = {
             "Polymers",
             "Chemistry in Everyday Life"
         ],
-        "Biology": [
+        "Botany": [
             "The Living World",
             "Biological Classification",
             "Plant Kingdom",
-            "Animal Kingdom",
             "Morphology of Flowering Plants",
             "Anatomy of Flowering Plants",
-            "Structural Organization in Animals",
             "Cell Structure and Function",
-            "Biomolecules",
             "Cell Cycle and Division",
             "Transport in Plants",
             "Mineral Nutrition",
             "Photosynthesis",
             "Respiration in Plants",
             "Plant Growth and Development",
+            "Reproduction in Organisms",
+            "Sexual Reproduction in Flowering Plants",
+            "Principles of Inheritance",
+            "Molecular Basis of Inheritance",
+            "Strategies for Enhancement in Food Production",
+            "Organisms and Populations",
+            "Ecosystem",
+            "Biodiversity and Conservation",
+            "Environmental Issues"
+        ],
+        "Zoology": [
+            "Animal Kingdom",
+            "Structural Organization in Animals",
+            "Biomolecules",
             "Digestion and Absorption",
             "Breathing and Exchange of Gases",
             "Body Fluids and Circulation",
@@ -159,22 +170,13 @@ SYLLABUS: Dict[str, Dict[str, List[str]]] = {
             "Locomotion and Movement",
             "Neural Control and Coordination",
             "Chemical Coordination",
-            "Reproduction in Organisms",
-            "Sexual Reproduction in Flowering Plants",
             "Human Reproduction",
             "Reproductive Health",
-            "Principles of Inheritance",
-            "Molecular Basis of Inheritance",
             "Evolution",
             "Human Health and Disease",
-            "Strategies for Enhancement in Food Production",
             "Microbes in Human Welfare",
             "Biotechnology Principles",
-            "Biotechnology Applications",
-            "Organisms and Populations",
-            "Ecosystem",
-            "Biodiversity and Conservation",
-            "Environmental Issues"
+            "Biotechnology Applications"
         ]
     }
 }

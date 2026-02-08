@@ -20,6 +20,8 @@ PROMPT_TEMPLATE = """You are an expert {exam} question paper setter with deep kn
 3. All 4 options should be plausible to avoid obvious elimination
 4. Solutions must be clear, concise, and educationally valuable
 5. Avoid ambiguous wording or trick questions
+6. Use LaTeX for chemical formulas and math (e.g., $H_2O$, $Na^+$, $x^2$)
+7. Use Markdown italics for biological names (e.g., *Homo sapiens*, *Volvox*)
 
 **Strict Format** (Follow EXACTLY):
 
@@ -40,14 +42,17 @@ Answer: [A/B/C/D]
 Solution: [explanation]
 
 **Important Notes**:
+- **CRITICAL**: Generate EXACTLY {num_questions} questions - NO MORE, NO LESS
+- This is a strict requirement: {num_questions} questions only
 - Number questions sequentially (Q1, Q2, Q3, ...)
 - Use EXACTLY the format shown above
 - Include all 4 options (A, B, C, D) for every question
 - Provide the correct answer letter (A, B, C, or D)
 - Keep solutions under 100 words
 - Do not include any extra text, headers, or commentary
+- **STOP IMMEDIATELY after Q{num_questions}** - do not continue beyond this point
 
-Generate {num_questions} questions now:
+Generate EXACTLY {num_questions} questions now (Q1 through Q{num_questions}):
 """
 
 
@@ -118,16 +123,28 @@ Answer: A
 Solution: Using power rule: d/dx(x³) = 3x², d/dx(2x²) = 4x, d/dx(-5x) = -5, d/dx(7) = 0. Therefore f'(x) = 3x² + 4x - 5.
 """,
     
-    "Biology": """
+    "Botany": """
 **Example Question**:
 
-Q1. During which phase of the cell cycle does DNA replication occur?
-A) G1 phase
-B) S phase
-C) G2 phase
-D) M phase
-Answer: B
-Solution: DNA replication occurs during the S (Synthesis) phase of interphase. G1 and G2 are gap phases for cell growth, and M phase is for mitosis.
+Q1. Which of the following is not a feature of plasmids?
+A) Circular structure
+B) Transferable
+C) Single-stranded
+D) Independent replication
+Answer: C
+Solution: Plasmids are extra-chromosomal, self-replicating, circular, double-stranded DNA molecules found in bacteria. They are not single-stranded.
+""",
+
+    "Zoology": """
+**Example Question**:
+
+Q1. Which of the following immunoglobulins does constitute the largest percentage in human milk?
+A) IgA
+B) IgG
+C) IgD
+D) IgM
+Answer: A
+Solution: IgA is the secretory antibody present in colostrum (human milk). It provides passive immunity to the infant. IgG is the most abundant in serum.
 """
 }
 

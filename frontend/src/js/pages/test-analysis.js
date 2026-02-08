@@ -379,7 +379,9 @@ function renderOptionsReview(question) {
 
 function formatText(text) {
     if (!text) return '';
-    return text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+    return text.replace(/\n/g, '<br>')
+        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+        .replace(/\*([^\*]+)\*/g, '<i>$1</i>');
 }
 
 // --- Event Listeners ---

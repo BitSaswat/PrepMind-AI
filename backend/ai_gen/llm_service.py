@@ -96,9 +96,12 @@ class LLMService:
         current_delay = retry_delay
         
         # Configuration for generation
+        # max_output_tokens: Limit output to prevent over-generation
+        # ~300 tokens per question * 50 questions = 15000, add buffer = 18000
         config = types.GenerateContentConfig(
             temperature=self.temperature,
-            candidate_count=1
+            candidate_count=1,
+            max_output_tokens=18000  # Hard limit to prevent generating >50 questions
         )
         
         for attempt in range(max_retries):

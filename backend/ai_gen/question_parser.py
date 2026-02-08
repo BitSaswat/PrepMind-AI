@@ -63,6 +63,14 @@ def parse_llm_output(
             subject=subject
         )
     
+    # HARD TRUNCATION: Immediately limit to expected count to prevent over-processing
+    # This enforces the count limit at the earliest possible stage
+    if expected_count and len(questions) > expected_count:
+        logger.warning(
+            f"Truncating parsed questions: got {len(questions)}, limiting to {expected_count}"
+        )
+        questions = questions[:expected_count]
+    
     # Validate and filter questions
     valid_questions = []
     invalid_count = 0

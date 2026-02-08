@@ -24,20 +24,37 @@ function initLoadingModal() {
 
     loadingModal.innerHTML = `
     <div class="loading-spinner-wrapper">
-      <div class="loading-spinner"></div>
-    </div>
-    <div class="loading-progress">
-      <div class="loading-progress-bar" id="loadingProgressBar"></div>
+      <div class="ai-orb">
+        <div class="orb-ring ring-1"></div>
+        <div class="orb-ring ring-2"></div>
+        <div class="orb-ring ring-3"></div>
+        <div class="orb-core"></div>
+        <div class="orb-particles"></div>
+      </div>
     </div>
     <h2 id="loadingTitle">Loading...</h2>
     <p id="loadingMessage">Please wait</p>
-    <div class="loading-status" id="loadingStatus"></div>
+    
+    <div class="loading-progress-container">
+        <div class="loading-progress-bar" id="loadingProgressBar"></div>
+    </div>
+    
+    <div class="loading-status" id="loadingStatus">Initializing AI...</div>
     <div class="loading-modal-actions" id="loadingActions" style="display: none;"></div>
   `;
 
     loadingOverlay.appendChild(loadingModal);
     document.body.appendChild(loadingOverlay);
 }
+
+let messageInterval;
+const AI_MESSAGES = [
+    "Analyzing syllabus patterns...",
+    "Calibrating difficulty matrix...",
+    "Synthesizing unique questions...",
+    "Optimizing distraction/options...",
+    "Finalizing test structure..."
+];
 
 /**
  * Show loading modal
@@ -55,12 +72,27 @@ export function showLoadingModal(title = 'Loading...', message = 'Please wait', 
     // Set content
     document.getElementById('loadingTitle').textContent = title;
     document.getElementById('loadingMessage').textContent = message;
-    document.getElementById('loadingStatus').textContent = '';
     document.getElementById('loadingActions').style.display = 'none';
 
     // Reset progress bar
     const progressBar = document.getElementById('loadingProgressBar');
     progressBar.style.width = '0%';
+
+    // Start message cycling
+    let msgIdx = 0;
+    const statusEl = document.getElementById('loadingStatus');
+    statusEl.textContent = AI_MESSAGES[0];
+    statusEl.style.opacity = 1;
+
+    if (messageInterval) clearInterval(messageInterval);
+    messageInterval = setInterval(() => {
+        msgIdx = (msgIdx + 1) % AI_MESSAGES.length;
+        statusEl.style.opacity = 0;
+        setTimeout(() => {
+            statusEl.textContent = AI_MESSAGES[msgIdx];
+            statusEl.style.opacity = 1;
+        }, 300);
+    }, 2000);
 
     // Show modal
     requestAnimationFrame(() => {

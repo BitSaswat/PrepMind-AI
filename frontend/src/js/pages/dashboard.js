@@ -136,13 +136,53 @@ function loadSubjects(examType) {
   });
 }
 
-// Load study statistics (placeholder data for now)
-function loadStudyStats() {
-  const ids = ['dailyStreak', 'hoursStudied', 'testsCompleted', 'avgScore'];
-  ids.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = el.textContent || '0';
-  });
+// Load study statistics from Firestore
+async function loadStudyStats() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  try {
+    const statsDoc = await getDoc(doc(db, 'users', user.uid, 'stats', 'summary'));
+
+    if (statsDoc.exists()) {
+      const stats = statsDoc.data();
+
+      // Update streak
+      const currentStreak = stats.currentStreak || 0;
+      const longestStreak = stats.longestStreak || 0;
+      document.getElementById('dailyStreak').textContent = currentStreak;
+      document.getElementById('longestStreak').textContent = `Longest: ${longestStreak}`;
+
+      // Update hours studied (total from all tests)
+      const totalHours = stats.totalHoursStudied || 0;
+      const bestHours = stats.bestDailyHours || 0;
+      document.getElementById('hoursStudied').textContent = `${totalHours.toFixed(1)}h`;
+      document.getElementById('bestHours').textContent = `Best: ${bestHours.toFixed(1)}h`;
+
+      // Update tests completed (total)
+      const totalTests = stats.totalTestsCompleted || 0;
+      const bestTests = stats.bestDailyTests || 0;
+      document.getElementById('testsCompleted').textContent = totalTests;
+      document.getElementById('bestTests').textContent = `Best: ${bestTests}/day`;
+    } else {
+      // Initialize with zeros if no stats exist
+      document.getElementById('dailyStreak').textContent = '0';
+      document.getElementById('longestStreak').textContent = 'Longest: 0';
+      document.getElementById('hoursStudied').textContent = '0h';
+      document.getElementById('bestHours').textContent = 'Best: 0h';
+      document.getElementById('testsCompleted').textContent = '0';
+      document.getElementById('bestTests').textContent = 'Best: 0/day';
+    }
+  } catch (error) {
+    console.error('Error loading stats:', error);
+    // Show zeros on error
+    document.getElementById('dailyStreak').textContent = '0';
+    document.getElementById('longestStreak').textContent = 'Longest: 0';
+    document.getElementById('hoursStudied').textContent = '0h';
+    document.getElementById('bestHours').textContent = 'Best: 0h';
+    document.getElementById('testsCompleted').textContent = '0';
+    document.getElementById('bestTests').textContent = 'Best: 0/day';
+  }
 }
 
 // Setup event listeners

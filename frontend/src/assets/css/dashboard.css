@@ -281,40 +281,108 @@ body {
 /* --- STATS GRID --- */
 .stats-section {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .stats-section {
+    grid-template-columns: 1fr;
+  }
 }
 
 .stat-card {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 160px;
+  height: 170px;
+  background: var(--card-bg);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root[data-theme="dark"] .stat-card {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.stat-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.06);
+  border-color: rgba(var(--accent-rgb), 0.3);
 }
 
 .stat-icon {
-  font-size: 32px;
+  font-size: 34px;
   margin-bottom: auto;
-  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  opacity: 0.9;
 }
 
+/* Smooth "go out" animation on hover */
 .stat-card:hover .stat-icon {
-  transform: scale(1.25) rotate(8deg);
+  transform: scale(1.15) translateY(-4px) rotate(6deg);
+  opacity: 1;
 }
+
+/* Distinct subtle colors for icons */
+.stat-card:nth-child(1) .stat-icon {
+  color: #FF9500;
+}
+
+/* Streak */
+.stat-card:nth-child(2) .stat-icon {
+  color: #007AFF;
+}
+
+/* Hours */
+.stat-card:nth-child(3) .stat-icon {
+  color: #34C759;
+}
+
+/* Tests */
 
 .stat-value {
-  font-size: 36px;
+  font-size: 42px;
   font-weight: 700;
   color: var(--text-primary);
-  letter-spacing: -1px;
+  letter-spacing: -1.5px;
+  line-height: 1;
+  margin-bottom: 8px;
+  transition: color 0.3s ease;
+}
+
+.stat-card:hover .stat-value {
+  color: var(--accent);
 }
 
 .stat-label {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
+  margin-top: 4px;
+}
+
+.stat-best {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: rgba(120, 120, 128, 0.08);
+  padding: 4px 10px;
+  border-radius: 12px;
+  width: fit-content;
+  margin-top: 10px;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover .stat-best {
+  background: var(--bg-app);
+  border-color: rgba(0, 0, 0, 0.05);
+  transform: translateX(2px);
 }
 
 /* --- ACTION CARDS --- */

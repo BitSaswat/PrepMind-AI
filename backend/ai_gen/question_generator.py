@@ -155,12 +155,19 @@ def _generate_subject_questions(
     Raises:
         ValidationError: If generation fails
     """
+    # Add buffer to account for validation failures
+    # Request more questions than needed, then select the best ones
+    SAFETY_BUFFER = 5  # Request 5 extra questions
+    questions_to_request = num_questions + SAFETY_BUFFER
+    
+    logger.info(f"Generating {num_questions} questions for {subject} (requesting {questions_to_request} with buffer)")
+    
     # Build prompt
     prompt = PROMPT_TEMPLATE.format(
         exam=exam,
         subject=subject,
         chapters=", ".join(chapters),
-        num_questions=num_questions,
+        num_questions=questions_to_request,  # Request with buffer
         difficulty=difficulty
     )
     
@@ -182,7 +189,7 @@ def _generate_subject_questions(
         questions = parse_llm_output(
             text=raw_output,
             subject=subject,
-            expected_count=num_questions,
+            expected_count=questions_to_request,  # Expect buffer amount
             strict=False  # Don't fail if we get fewer questions
         )
     except Exception as e:
@@ -192,10 +199,15 @@ def _generate_subject_questions(
             field="parsing"
         )
     
-    # Limit to requested count (take best ones if we got more)
+    # Select the best questions up to the requested count
     if len(questions) > num_questions:
-        logger.info(f"Got {len(questions)} questions, limiting to {num_questions}")
+        logger.info(f"Got {len(questions)} questions, selecting best {num_questions}")
         questions = questions[:num_questions]
+    elif len(questions) < num_questions:
+        logger.warning(
+            f"Insufficient questions after validation: expected {num_questions}, got {len(questions)}. "
+            f"Buffer helped but still short."
+        )
     
     # Add metadata
     for question in questions:
