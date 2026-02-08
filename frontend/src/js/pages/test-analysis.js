@@ -345,15 +345,44 @@ function createQuestionCard(question, index) {
 }
 
 function renderOptionsReview(question) {
+    // Check for numerical type
+    if (question.type === 'numerical') {
+        const userAnswer = question.userAnswer !== undefined && question.userAnswer !== null ? question.userAnswer : 'Not Attempted';
+        const correctAnswer = question.correct;
+        const isCorrect = question.status === 'correct';
+        const isWrong = question.status === 'wrong';
+        const isSkipped = question.status === 'skipped'; // or simply not correct/wrong
+
+        let userColor = '#94a3b8'; // default/skipped
+        if (isCorrect) userColor = '#22c55e';
+        else if (isWrong) userColor = '#ef4444';
+
+        return `
+            <div style="padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; margin-top: 10px;">
+                <div style="margin-bottom: 10px; font-size: 1.1em;">
+                    <span style="color: #bbb;">Your Answer:</span>
+                    <span style="font-weight: bold; color: ${userColor}; margin-left: 10px;">${userAnswer}</span>
+                    ${isCorrect ? '<span style="color: #22c55e; margin-left: 10px;">✓</span>' : ''}
+                    ${isWrong ? '<span style="color: #ef4444; margin-left: 10px;">✗</span>' : ''}
+                </div>
+                <div style="font-size: 1.1em;">
+                    <span style="color: #bbb;">Correct Answer:</span>
+                    <span style="font-weight: bold; color: #22c55e; margin-left: 10px;">${correctAnswer}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    // MCQ Logic
     const options = ['A', 'B', 'C', 'D'];
     return options.map(opt => {
-        if (!question.options[opt]) return '';
+        if (!question.options || !question.options[opt]) return '';
 
         const isUserAnswer = question.userAnswer === opt;
         const isCorrect = question.correct === opt;
 
         let classes = 'option-review-item';
-        let indicator = '';
+        let indicator = ''; // HTML string
 
         if (isCorrect) {
             classes += ' correct-answer';

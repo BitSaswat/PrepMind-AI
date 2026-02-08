@@ -144,7 +144,13 @@ def validate_question_structure(question: Dict[str, Any]) -> Tuple[bool, List[st
     errors = []
     
     # Check required fields
-    missing_fields = [field for field in REQUIRED_QUESTION_FIELDS if field not in question]
+    required_fields = list(REQUIRED_QUESTION_FIELDS)
+    is_numerical = question.get("type") == "numerical"
+    
+    if is_numerical and "options" in required_fields:
+        required_fields.remove("options")
+        
+    missing_fields = [field for field in required_fields if field not in question]
     if missing_fields:
         errors.append(f"Missing required fields: {', '.join(missing_fields)}")
     
@@ -158,8 +164,8 @@ def validate_question_structure(question: Dict[str, Any]) -> Tuple[bool, List[st
         elif len(q_text) > MAX_QUESTION_LENGTH:
             errors.append(f"Question too long (max {MAX_QUESTION_LENGTH} chars)")
     
-    # Validate options
-    if "options" in question:
+    # Validate options (only for MCQ)
+    if not is_numerical and "options" in question:
         options = question["options"]
         if not isinstance(options, dict):
             errors.append(f"Options must be a dictionary, got {type(options).__name__}")
@@ -183,8 +189,16 @@ def validate_question_structure(question: Dict[str, Any]) -> Tuple[bool, List[st
     # Validate correct answer
     if "correct" in question:
         correct = question["correct"]
-        if correct not in VALID_OPTIONS:
-            errors.append(f"Invalid correct answer: {correct}. Must be one of {VALID_OPTIONS}")
+        if is_numerical:
+            # For numerical, correct should be an integer or convertible to int
+            if not isinstance(correct, (int, str)):
+                 errors.append(f"Numerical answer must be int or string, got {type(correct).__name__}")
+            elif isinstance(correct, str) and not correct.lstrip('-').isdigit():
+                 errors.append(f"Numerical answer string must be integer, got {correct}")
+        else:
+            # For MCQ
+            if correct not in VALID_OPTIONS:
+                errors.append(f"Invalid correct answer: {correct}. Must be one of {VALID_OPTIONS}")
     
     # Validate solution
     if "solution" in question:

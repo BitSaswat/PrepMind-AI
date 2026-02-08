@@ -7,7 +7,7 @@ import time
 from typing import Dict, List, Any, Tuple
 
 from .llm_service import call_llm
-from .prompt import PROMPT_TEMPLATE
+from .prompt import PROMPT_TEMPLATE, NUMERICAL_PROMPT_TEMPLATE
 from .question_parser import parse_llm_output
 from .logger import get_logger
 from .validators import (
@@ -60,7 +60,12 @@ def generate_questions(
     for subject, data in subject_data.items():
         try:
             validate_subject(exam, subject)
-            validate_num_questions(data["num_questions"])
+            # Check if this is JEE mixed type or standard
+            if "num_mcq" in data and "num_numerical" in data:
+                validate_num_questions(data["num_mcq"])
+                validate_num_questions(data["num_numerical"])
+            else:
+                validate_num_questions(data["num_questions"])
             validate_difficulty(data["difficulty"])
             validate_chapters(exam, subject, data["chapters"])
         except Exception as e:
@@ -76,18 +81,35 @@ def generate_questions(
 
     # Validate all subject configurations first
     for subject, data in subject_data.items():
-        logger.info(f"Generating {data['num_questions']} questions for {subject}")
+        # Calculate total questions for logging and validation
+        if "num_mcq" in data and "num_numerical" in data:
+             total_q = data["num_mcq"] + data["num_numerical"]
+        else:
+             total_q = data["num_questions"]
+             
+        logger.info(f"Generating {total_q} questions for {subject}")
         subject_start_time = time.time()
         
         try:
-            # Generate questions for this subject
-            questions = _generate_subject_questions(
-                exam=exam,
-                subject=subject,
-                chapters=data["chapters"],
-                num_questions=data["num_questions"],
-                difficulty=data["difficulty"]
-            )
+            # Check if this is JEE mixed type (MCQ + Numerical)
+            if "num_mcq" in data and "num_numerical" in data:
+                questions = _generate_mixed_questions_jee(
+                    exam=exam,
+                    subject=subject,
+                    chapters=data["chapters"],
+                    num_mcq=data["num_mcq"],
+                    num_numerical=data["num_numerical"],
+                    difficulty=data["difficulty"]
+                )
+            else:
+                # Standard: Generate uniform questions (all MCQ for NEET)
+                questions = _generate_subject_questions(
+                    exam=exam,
+                    subject=subject,
+                    chapters=data["chapters"],
+                    num_questions=data["num_questions"],
+                    difficulty=data["difficulty"]
+                )
             
             subject_duration = time.time() - subject_start_time
             logger.info(
@@ -104,10 +126,10 @@ def generate_questions(
                 by_subject[subject].append(question)
             
             # Check if we got enough questions
-            if len(questions) < data["num_questions"]:
+            if len(questions) < total_q:
                 logger.warning(
                     f"Insufficient questions for {subject}: "
-                    f"requested {data['num_questions']}, got {len(questions)}"
+                    f"requested {total_q}, got {len(questions)}"
                 )
         
         except Exception as e:
@@ -247,3 +269,163 @@ def generate_single_subject(
     
     all_questions, _ = generate_questions(exam, subject_data)
     return all_questions
+
+
+def _generate_mixed_questions_jee(
+    exam: str,
+    subject: str,
+    chapters: List[str],
+    num_mcq: int,
+    num_numerical: int,
+    difficulty: str
+) -> List[Dict[str, Any]]:
+    """
+    Generate mixed question types for JEE (MCQs + Numericals).
+    
+    Args:
+        exam: Exam type (should be 'JEE')
+        subject: Subject name
+        chapters: List of chapters to cover
+        num_mcq: Number of MCQ questions to generate
+        num_numerical: Number of numerical questions to generate
+        difficulty: Difficulty level
+        
+    Returns:
+        List of generated questions (MCQs first, then numericals)
+        
+    Raises:
+        ValidationError: If generation fails
+    """
+    logger.info(
+        f"Generating mixed questions for {subject}: "
+        f"{num_mcq} MCQs + {num_numerical} Numericals"
+    )
+    
+    all_questions = []
+    
+    # Step 1: Generate MCQs
+    if num_mcq > 0:
+        logger.info(f"Generating {num_mcq} MCQs for {subject}")
+        mcq_questions = _generate_subject_questions(
+            exam=exam,
+            subject=subject,
+            chapters=chapters,
+            num_questions=num_mcq,
+            difficulty=difficulty
+        )
+        # Tag as MCQ type
+        for q in mcq_questions:
+            q["type"] = "mcq"
+        all_questions.extend(mcq_questions)
+        logger.info(f"Generated {len(mcq_questions)} MCQs")
+    
+    # Step 2: Generate Numericals
+    if num_numerical > 0:
+        logger.info(f"Generating {num_numerical} Numericals for {subject}")
+        numerical_questions = _generate_numerical_questions(
+            exam=exam,
+            subject=subject,
+            chapters=chapters,
+            num_questions=num_numerical,
+            difficulty=difficulty
+        )
+        # Tag as numerical type
+        for q in numerical_questions:
+            q["type"] = "numerical"
+        all_questions.extend(numerical_questions)
+        logger.info(f"Generated {len(numerical_questions)} Numericals")
+    
+    logger.info(
+        f"Total mixed questions for {subject}: {len(all_questions)} "
+        f"({num_mcq} MCQs + {num_numerical} Numericals)"
+    )
+    
+    return all_questions
+
+
+def _generate_numerical_questions(
+    exam: str,
+    subject: str,
+    chapters: List[str],
+    num_questions: int,
+    difficulty: str
+) -> List[Dict[str, Any]]:
+    """
+    Generate numerical answer type questions.
+    
+    Args:
+        exam: Exam type
+        subject: Subject name
+        chapters: List of chapters to cover
+        num_questions: Number of questions to generate
+        difficulty: Difficulty level
+        
+    Returns:
+        List of generated numerical questions
+        
+    Raises:
+        ValidationError: If generation fails
+    """
+    # Add buffer to account for validation failures
+    SAFETY_BUFFER = 3  # Smaller buffer for numericals
+    questions_to_request = num_questions + SAFETY_BUFFER
+    
+    logger.info(
+        f"Generating {num_questions} numerical questions for {subject} "
+        f"(requesting {questions_to_request} with buffer)"
+    )
+    
+    # Build prompt using numerical template
+    prompt = NUMERICAL_PROMPT_TEMPLATE.format(
+        exam=exam,
+        subject=subject,
+        chapters=", ".join(chapters),
+        num_questions=questions_to_request,
+        difficulty=difficulty
+    )
+    
+    logger.debug(f"Numerical prompt length: {len(prompt)} chars")
+    
+    # Call LLM
+    try:
+        raw_output = call_llm(prompt)
+        logger.debug(f"LLM response length: {len(raw_output)} chars")
+    except Exception as e:
+        logger.error(f"LLM call failed for {subject} numericals: {str(e)}")
+        raise ValidationError(
+            f"Failed to generate numerical questions for {subject}: {str(e)}",
+            field="llm_call"
+        )
+    
+    # Parse output (using same parser, but it will handle numerical format)
+    try:
+        questions = parse_llm_output(
+            text=raw_output,
+            subject=subject,
+            expected_count=questions_to_request,
+            strict=False
+        )
+    except Exception as e:
+        logger.error(f"Parsing failed for {subject} numericals: {str(e)}")
+        raise ValidationError(
+            f"Failed to parse numerical questions for {subject}: {str(e)}",
+            field="parsing"
+        )
+    
+    # Select the best questions up to the requested count
+    if len(questions) > num_questions:
+        logger.info(f"Got {len(questions)} numerical questions, selecting best {num_questions}")
+        questions = questions[:num_questions]
+    elif len(questions) < num_questions:
+        logger.warning(
+            f"Insufficient numerical questions after validation: "
+            f"expected {num_questions}, got {len(questions)}. Buffer helped but still short."
+        )
+    
+    # Add metadata
+    for question in questions:
+        question["difficulty"] = difficulty
+        question["chapter"] = chapters[0] if chapters else None
+        question["type"] = "numerical"
+    
+    return questions

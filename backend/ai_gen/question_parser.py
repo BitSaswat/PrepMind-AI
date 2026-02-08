@@ -9,7 +9,7 @@ from typing import List, Dict, Any, Optional, Tuple
 from .logger import get_logger
 from .constants import (
     QUESTION_PATTERN, ANSWER_PATTERN, SOLUTION_PATTERN,
-    OPTION_PATTERN, MIN_PARSE_SUCCESS_RATE
+    OPTION_PATTERN, MIN_PARSE_SUCCESS_RATE, NUMERICAL_ANSWER_PATTERN
 )
 from .exceptions import ParsingError, InsufficientQuestionsError
 from .validators import validate_question, sanitize_text
@@ -159,7 +159,24 @@ def _parse_question_block(block: str, index: int) -> Optional[Dict[str, Any]]:
     """
     # Extract answer
     answer_match = re.search(ANSWER_PATTERN, block, re.IGNORECASE)
-    correct_answer = answer_match.group(1).upper() if answer_match else None
+    numerical_match = None
+    question_type = "mcq"
+    
+    if answer_match:
+        correct_answer = answer_match.group(1).upper()
+    else:
+        # Check for numerical answer
+        numerical_match = re.search(NUMERICAL_ANSWER_PATTERN, block, re.IGNORECASE)
+        if numerical_match:
+            try:
+                # Round to nearest integer if decimal, though regex enforces integer-like format
+                # But typically our prompt asks for integer
+                correct_answer = int(float(numerical_match.group(1))) # Robust against "42.0"
+                question_type = "numerical"
+            except ValueError:
+                correct_answer = None
+        else:
+            correct_answer = None
     
     # Extract solution
     solution_match = re.search(SOLUTION_PATTERN, block, re.IGNORECASE | re.DOTALL)
@@ -169,19 +186,23 @@ def _parse_question_block(block: str, index: int) -> Optional[Dict[str, Any]]:
     clean_block = block
     if answer_match:
         clean_block = clean_block[:answer_match.start()] + clean_block[answer_match.end():]
+    elif numerical_match:
+        clean_block = clean_block[:numerical_match.start()] + clean_block[numerical_match.end():]
+        
     if solution_match:
         clean_block = clean_block[:solution_match.start()] + clean_block[solution_match.end():]
     
-    # Extract options
+    # Extract options (only for MCQ)
     options = {}
-    for opt in ["A", "B", "C", "D"]:
-        pattern = OPTION_PATTERN.format(opt=opt)
-        match = re.search(pattern, clean_block, re.IGNORECASE)
-        if match:
-            option_text = match.group(1).strip()
-            # Remove this option from the block
-            clean_block = clean_block[:match.start()] + clean_block[match.end():]
-            options[opt] = sanitize_text(option_text)
+    if question_type == "mcq":
+        for opt in ["A", "B", "C", "D"]:
+            pattern = OPTION_PATTERN.format(opt=opt)
+            match = re.search(pattern, clean_block, re.IGNORECASE)
+            if match:
+                option_text = match.group(1).strip()
+                # Remove this option from the block
+                clean_block = clean_block[:match.start()] + clean_block[match.end():]
+                options[opt] = sanitize_text(option_text)
     
     # Extract question text (what's left after removing options)
     lines = [line.strip() for line in clean_block.split('\n') if line.strip()]
@@ -201,8 +222,9 @@ def _parse_question_block(block: str, index: int) -> Optional[Dict[str, Any]]:
     return {
         "id": index,
         "subject": "",  # Will be set by caller
+        "type": question_type,
         "question": sanitize_text(question_text),
-        "options": options,
+        "options": options if question_type == "mcq" else None,
         "correct": correct_answer,
         "solution": sanitize_text(solution)
     }

@@ -58,6 +58,7 @@ VALID_OPTIONS: Final[tuple] = ("A", "B", "C", "D")
 # Regex patterns
 QUESTION_PATTERN: Final[str] = r'\n(?=Q\d+\.)'
 ANSWER_PATTERN: Final[str] = r'Answer:\s*([A-D])'
+NUMERICAL_ANSWER_PATTERN: Final[str] = r'Answer:\s*(\-?\d+)'  # Support negative integers too
 SOLUTION_PATTERN: Final[str] = r'Solution:\s*(.*)'
 OPTION_PATTERN: Final[str] = r'{opt}\)\s*(.*)'
 

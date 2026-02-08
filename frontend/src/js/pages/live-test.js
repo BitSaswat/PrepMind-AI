@@ -217,17 +217,63 @@ function renderOptions(question) {
     const grid = document.getElementById('optionsGrid');
     grid.innerHTML = '';
 
+    // Check query type (default to mcq if missing)
+    const type = question.type || 'mcq';
+
+    if (type === 'numerical') {
+        const container = document.createElement('div');
+        container.className = 'numerical-input-container';
+        container.style.padding = '20px';
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column';
+        container.style.gap = '10px';
+
+        const label = document.createElement('label');
+        label.textContent = 'Enter your numerical answer (Integer):';
+        label.style.fontWeight = 'bold';
+        label.style.color = '#fff';
+
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.className = 'numerical-input';
+        input.placeholder = 'Type your answer here...';
+        input.value = currentState.answers[question.id] || '';
+
+        // Styling for the input
+        input.style.padding = '12px';
+        input.style.fontSize = '18px';
+        input.style.borderRadius = '8px';
+        input.style.border = '1px solid #444';
+        input.style.backgroundColor = '#2a2a2a';
+        input.style.color = '#fff';
+        input.style.width = '100%';
+        input.style.maxWidth = '300px';
+
+        input.oninput = (e) => {
+            saveNumericalAnswer(question.id, e.target.value);
+        };
+
+        container.appendChild(label);
+        container.appendChild(input);
+        grid.appendChild(container);
+        return;
+    }
+
+    // MCQ Handling
     const selectedAns = currentState.answers[question.id];
 
     ['A', 'B', 'C', 'D'].forEach(optKey => {
-        if (question.options[optKey]) {
+        if (question.options && question.options[optKey]) {
             const el = document.createElement('div');
             el.className = `option-item ${selectedAns === optKey ? 'selected' : ''}`;
             el.onclick = () => selectOption(question.id, optKey);
 
+            // Format option text
+            const formattedOpt = formatText(question.options[optKey]);
+
             el.innerHTML = `
                 <div class="option-label">${optKey}</div>
-                <div class="option-text">${formatText(question.options[optKey])}</div>
+                <div class="option-text">${formattedOpt}</div>
             `;
             grid.appendChild(el);
         }
@@ -247,6 +293,26 @@ function selectOption(qId, optKey) {
     }
 
     renderOptions(currentState.questions[currentState.currentQuestionIndex]);
+    renderPalette();
+    saveState();
+}
+
+function saveNumericalAnswer(qId, value) {
+    currentState.answers[qId] = value;
+
+    if (value && value.trim() !== '') {
+        if (currentState.status[qId] !== 'marked') {
+            currentState.status[qId] = 'answered';
+        }
+    } else {
+        // If cleared, keep as visited but not answered? 
+        // Or if strictly not answered, set to not-visited or visited?
+        // Usually we keep 'not-answered' if visited.
+        if (currentState.status[qId] !== 'marked') {
+            currentState.status[qId] = 'not-answered';
+        }
+    }
+
     renderPalette();
     saveState();
 }
@@ -404,11 +470,23 @@ function submitTest(auto) {
     currentState.questions.forEach(q => {
         const userAns = currentState.answers[q.id];
         let status = 'skipped';
+        let isCorrect = false;
+
+        // Check correctness based on question type
+        if (userAns) {
+            if (q.type === 'numerical') {
+                // Approximate comparison for integers (handle string vs number)
+                isCorrect = parseInt(userAns) === parseInt(q.correct);
+            } else {
+                // Strict equality for MCQs (A/B/C/D)
+                isCorrect = userAns === q.correct;
+            }
+        }
 
         if (!userAns) {
             skipped++;
             subjectWise[q.subject].skipped++;
-        } else if (userAns === q.correct) {
+        } else if (isCorrect) {
             correct++;
             totalScore += MARKS.CORRECT;
             subjectWise[q.subject].correct++;

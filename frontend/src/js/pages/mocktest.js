@@ -179,8 +179,11 @@ function setupEventListeners() {
           // Check if user is NEET student
           if (currentUserData && currentUserData.targetExam === 'NEET') {
             handleFullLengthNEETTest();
+          } else if (currentUserData && (currentUserData.targetExam === 'JEE' || !currentUserData.targetExam)) {
+            // Handle JEE (default if not specified)
+            handleFullLengthJEETest();
           } else {
-            // JEE or other - show coming soon
+            // Other exams - show coming soon
             showInfoModal(
               'Test Starting Soon! 🎯',
               `The "${testTitle}" test interface is being developed. We're making it amazing for you!`
@@ -379,6 +382,122 @@ async function handleFullLengthNEETTest() {
         () => {
           hideLoadingModal();
           handleFullLengthNEETTest(); // Retry
+        }
+      );
+    }, 300);
+  }
+}
+
+// Handle Full Length JEE Mock Test
+async function handleFullLengthJEETest() {
+  try {
+    // Show loading modal
+    showLoadingModal(
+      '🤖 Preparing Your Full Length JEE Test...',
+      'Generating 75 JEE questions (20 MCQ + 5 Numerical per subject)...',
+      8000
+    );
+    setLoadingStatus('AI is creating your personalized test...');
+
+    // Prepare subject data for API
+    const subjectData = {
+      'Physics': {
+        chapters: [],
+        num_mcq: 20,
+        num_numerical: 5,
+        difficulty: 'Medium'
+      },
+      'Chemistry': {
+        chapters: [],
+        num_mcq: 20,
+        num_numerical: 5,
+        difficulty: 'Medium'
+      },
+      'Mathematics': {
+        chapters: [],
+        num_mcq: 20,
+        num_numerical: 5,
+        difficulty: 'Medium'
+      }
+    };
+
+    // Generate questions
+    setProgress(30);
+    setLoadingStatus('Calling AI model...');
+
+    const response = await fetch('http://localhost:5000/api/ai/generate-questions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        exam: 'JEE',
+        subject_data: subjectData
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to generate questions');
+    }
+
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.error || 'Question generation failed');
+    }
+
+    // Prepare test data
+    setProgress(80);
+    updateLoadingModal(
+      '⏱️ Starting Test...',
+      'Your test is ready! Redirecting to test interface...'
+    );
+
+    // Store test data in sessionStorage
+    const testData = {
+      testId: `jee_full_${Date.now()}`,
+      exam: 'JEE',
+      subjects: ['Physics', 'Chemistry', 'Mathematics'],
+      questions: data.questions,
+      by_subject: data.by_subject,
+      duration: 180, // 3 hours in minutes
+      startTime: null, // Will be set when test page loads
+      metadata: data.metadata
+    };
+
+    sessionStorage.setItem('currentTest', JSON.stringify(testData));
+
+    setProgress(100);
+
+    // Show success and redirect
+    hideLoadingModal();
+
+    setTimeout(() => {
+      showSuccessModal(
+        '✅ Test Ready!',
+        'Redirecting to test interface...',
+        1500
+      );
+
+      setTimeout(() => {
+        hideLoadingModal();
+        // Redirect to the Live Test page
+        window.location.href = '../pages/live-test.html';
+      }, 1500);
+    }, 300);
+
+  } catch (error) {
+    console.error('Full Length JEE test error:', error);
+    hideLoadingModal();
+
+    setTimeout(() => {
+      showErrorModal(
+        '❌ Test Start Failed',
+        error.message || 'Failed to start test. Please try again.',
+        () => {
+          hideLoadingModal();
+          handleFullLengthJEETest(); // Retry
         }
       );
     }, 300);

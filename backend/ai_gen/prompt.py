@@ -56,6 +56,54 @@ Generate EXACTLY {num_questions} questions now (Q1 through Q{num_questions}):
 """
 
 
+# Numerical Answer Type prompt template for JEE
+NUMERICAL_PROMPT_TEMPLATE = """You are an expert {exam} question paper setter with deep knowledge of {subject}.
+
+**Task**: Generate {num_questions} high-quality Numerical Answer Type (NAT) questions.
+
+**Specifications**:
+- Subject: {subject}
+- Chapters: {chapters}
+- Difficulty Level: {difficulty}
+- Exam Standard: {exam} (Indian competitive exam)
+- Question Type: Numerical Answer Type (integer answer)
+
+**Quality Requirements**:
+1. Questions must be exam-level difficulty and conceptually accurate
+2. Each question must test calculation, application, or problem-solving skills
+3. Answer must be a single integer (round to nearest integer if needed)
+4. Question should clearly specify units and what to calculate
+5. Solutions must show step-by-step calculation
+6. Use LaTeX for math expressions (e.g., $x^2$, $\\frac{{a}}{{b}}$, $\\sqrt{{x}}$)
+
+**Strict Format** (Follow EXACTLY):
+
+Q1. [Clear, specific question text with units specified]
+Answer: [single integer value]
+Solution: [Step-by-step calculation showing how to arrive at the answer]
+
+Q2. [Next question...]
+Answer: [integer]
+Solution: [calculation steps]
+
+**Important Notes**:
+- **CRITICAL**: Generate EXACTLY {num_questions} questions - NO MORE, NO LESS
+- This is a strict requirement: {num_questions} questions only
+- Number questions sequentially (Q1, Q2, Q3, ...)
+- Use EXACTLY the format shown above
+- **NO OPTIONS** (A, B, C, D) - this is numerical answer type
+- Answer must be a SINGLE INTEGER only (e.g., "Answer: 42")
+- If calculation gives decimal, round to nearest integer
+- Clearly specify units in the question
+- Keep solutions under 150 words
+- Do not include any extra text, headers, or commentary
+- **STOP IMMEDIATELY after Q{num_questions}** - do not continue beyond this point
+
+Generate EXACTLY {num_questions} numerical questions now (Q1 through Q{num_questions}):
+"""
+
+
+
 # Difficulty-specific prompt modifiers
 DIFFICULTY_MODIFIERS = {
     "Easy": """

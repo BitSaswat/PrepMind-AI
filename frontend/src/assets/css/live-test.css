@@ -215,7 +215,8 @@ body {
     display: flex;
     flex-direction: column;
     padding: 24px;
-    overflow-y: auto;
+    overflow: hidden;
+    /* Changed from auto to hidden to contain scrolling */
     gap: 0;
     max-height: calc(100vh - var(--header-height));
 }
@@ -230,6 +231,9 @@ body {
     justify-content: space-between;
     align-items: center;
     box-shadow: var(--shadow-card);
+    flex-shrink: 0;
+    /* Prevent shrinking */
+    z-index: 10;
 }
 
 .q-meta {
@@ -284,13 +288,22 @@ body {
 
 .question-content {
     background: var(--card-bg);
-    padding: 32px 28px;
+    padding: 32px 28px 40px 28px;
+    /* Increased bottom padding for breathing room */
     border: 1px solid var(--border);
     border-top: none;
     border-bottom: none;
     flex: 1;
-    min-height: 400px;
-    margin-bottom: 20px;
+    min-height: 0;
+    /* Important for flex child scrolling */
+    margin-bottom: 0;
+    /* Remove margin to connect with footer */
+    overflow-y: auto;
+    /* Scroll inside content */
+    scroll-behavior: smooth;
+    /* Hide scrollbar for cleaner look but keep functionality */
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
 }
 
 .q-text {
@@ -303,19 +316,24 @@ body {
 
 .options-grid {
     display: grid;
-    gap: 14px;
+    gap: 16px;
+    /* Slightly increased gap */
 }
 
 .option-item {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    /* Align to top for large/matrix content */
     padding: 16px 20px;
+    /* Reduced padding for better fit */
     border: 2px solid var(--border);
-    border-radius: 14px;
+    border-radius: 16px;
     cursor: pointer;
     transition: all 0.3s var(--ease-spring);
     color: var(--text-primary);
     background: var(--bg-app);
+    min-height: auto;
+    /* Allow content to define height */
 }
 
 .option-item:hover {
@@ -345,6 +363,10 @@ body {
     font-size: 0.9rem;
     font-weight: 700;
     transition: all 0.3s var(--ease-spring);
+    margin-top: 2px;
+    /* Fine-tune alignment with text line-height */
+    flex-shrink: 0;
+    /* Prevent label from shrinking */
 }
 
 .option-item.selected .option-label {
@@ -356,6 +378,37 @@ body {
 
 .option-text {
     flex: 1;
+    overflow-x: auto;
+    /* Allow horizontal scroll for wide matrices */
+    width: 100%;
+    /* Ensure it takes available width */
+    word-break: break-word;
+    /* Prevent text overflow */
+    display: flex;
+    /* For better alignment of inner content */
+    align-items: center;
+    /* Vertically center content if line-height allows */
+    min-height: 28px;
+    /* Match label height roughly for short text alignment */
+}
+
+/* Handle MathJax/Images inside options */
+.option-text img,
+.option-text svg,
+.option-text>span {
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+}
+
+/* Custom scrollbar for option text if it overflows */
+.option-text::-webkit-scrollbar {
+    height: 4px;
+}
+
+.option-text::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
 }
 
 .question-footer {
