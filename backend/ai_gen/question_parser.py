@@ -74,6 +74,7 @@ def parse_llm_output(
     # Validate and filter questions
     valid_questions = []
     invalid_count = 0
+    seen_texts = set()
     
     for i, question in enumerate(questions):
         question["id"] = i  # Assign temporary ID
@@ -81,6 +82,14 @@ def parse_llm_output(
         
         try:
             if validate_question(question, raise_on_error=False):
+                # Check for duplicates
+                q_text_norm = question.get("question", "").strip().lower()
+                # Simple normalization to catch exact duplicates
+                if q_text_norm in seen_texts:
+                    logger.warning(f"Skipping duplicate question {i} in {subject}")
+                    continue
+                
+                seen_texts.add(q_text_norm)
                 valid_questions.append(question)
             else:
                 invalid_count += 1

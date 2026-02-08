@@ -168,8 +168,7 @@ SYLLABUS: Dict[str, Dict[str, List[str]]] = {
             "Body Fluids and Circulation",
             "Excretory Products and Elimination",
             "Locomotion and Movement",
-            "Neural Control and Coordination",
-            "Chemical Coordination",
+        "Chemical Coordination",
             "Human Reproduction",
             "Reproductive Health",
             "Evolution",
@@ -177,6 +176,123 @@ SYLLABUS: Dict[str, Dict[str, List[str]]] = {
             "Microbes in Human Welfare",
             "Biotechnology Principles",
             "Biotechnology Applications"
+        ]
+    },
+
+    "UPSC": {
+        "History": [
+            "Ancient India: Prehistoric Cultures to Later Vedic Period",
+            "Ancient India: Mauryan and Post-Mauryan Empire",
+            "Early Medieval India: Dynasties and Culture",
+            "Medieval India: Delhi Sultanate and Mughal Empire",
+            "Modern India: Advent of Europeans and British Expansion",
+            "Modern India: Revolt of 1857 and Social Reform Movements",
+            "Modern India: Indian National Movement and Freedom Struggle",
+            "Art and Culture: Architecture, Sculpture, Paintings",
+            "Art and Culture: Music, Dance, Theatre, Literature"
+        ],
+        "Geography": [
+            "Physical Geography: Geomorphology (Landforms)",
+            "Physical Geography: Climatology (Atmosphere)",
+            "Physical Geography: Oceanography (Hydrosphere)",
+            "World Geography: Continents and Resources",
+            "Indian Geography: Physiography and Drainage System",
+            "Indian Geography: Climate, Soils, and Natural Vegetation",
+            "Indian Geography: Agriculture and Irrigation",
+            "Indian Geography: Mineral and Energy Resources",
+            "Indian Geography: Industries and Transport",
+            "Human Geography: Demography and Urbanization"
+        ],
+        "Polity": [
+            "Constitutional Framework: Making of Constitution",
+            "Preamble, Fundamental Rights, DPSP, Fundamental Duties",
+            "Union Government: Executive (President, PM) and Parliament",
+            "State Government: Governor, CM, State Legislature",
+            "Judiciary: Supreme Court, High Courts, Subordinate Courts",
+            "Local Government: Panchayati Raj and Municipalities",
+            "Federalism and Centre-State Relations",
+            "Constitutional Bodies (EC, UPSC, CAG etc.)",
+            "Non-Constitutional Bodies (NITI Aayog, NHRC etc.)",
+            "Governance and Public Policy"
+        ],
+        "Economy": [
+            "National Income Accounting and GDP",
+            "Inflation: Types, Causes, and Control",
+            "Banking System and Monetary Policy (RBI)",
+            "Fiscal Policy and Budgeting",
+            "Planning and NITI Aayog",
+            "Agriculture and Food Processing",
+            "Industry and Infrastructure",
+            "External Sector: Balance of Payments and Trade",
+            "International Economic Organizations (IMF, WB, WTO)",
+            "Social Sector: Poverty, Employment, Inequality"
+        ],
+        "General Science": [
+            "Physics: Mechanics, Heat, Light, Sound, Electricity",
+            "Chemistry: Elements, Compounds, Acids-Bases, Carbon",
+            "Biology: Cell Structure, Human Physiology, Diseases",
+            "Space Technology and Indian Space Program",
+            "Defense Technology and Missiles",
+            "Information Technology and Computers",
+            "Nanotechnology and Biotechnology",
+            "Recent Scientific Developments"
+        ],
+        "Environment": [
+            "Ecology: Ecosystems, Food Chains, Biomes",
+            "Biodiversity: Conservation, Hotspots, Protected Areas",
+            "Climate Change: Greenhouse Effect, Global Warming",
+            "Environmental Pollution and Control",
+            "International Environmental Conventions and Treaties",
+            "Indian Environmental Laws and Acts",
+            "Sustainable Development"
+        ],
+        "Current Affairs": [
+            "National News: Major Events and Government Schemes",
+            "International Relations: Summits and Geopolitics",
+            "Awards and Honours",
+            "Sports and Games",
+            "Science and Technology Updates",
+            "Economy Updates and Indices",
+            "Environment and Ecology News",
+            "Committees and Commissions"
+        ]
+    },
+
+    "CSAT": {
+        "Reading Comprehension": [
+            "Passages: Inferences and Assumptions",
+            "Passages: Social and Economic Issues",
+            "Passages: Moral and Ethical Issues",
+            "Passages: Scientific and Ecological Issues"
+        ],
+        "Quantitative Aptitude": [
+            "Number System and Basic Numeracy",
+            "HCF and LCM",
+            "Percentages",
+            "Averages",
+            "Ratio and Proportion",
+            "Profit and Loss",
+            "Time and Work",
+            "Speed, Time and Distance",
+            "Permutation and Combination",
+            "Probability",
+            "Mensuration (Area and Volume)"
+        ],
+        "Logical Reasoning": [
+            "General Mental Ability",
+            "Logical Deduction and Syllogism",
+            "Seating Arrangement and Puzzles",
+            "Blood Relations",
+            "Direction Sense Test",
+            "Series Completion (Number and Letter)",
+            "Coding and Decoding",
+            "Clocks and Calendars",
+            "Data Sufficiency"
+        ],
+        "Data Interpretation": [
+            "Charts (Bar, Pie, Line)",
+            "Graphs and Tables",
+            "Data Sufficiency"
         ]
     }
 }
@@ -192,6 +308,16 @@ MARKING_SCHEME: Dict[str, Dict[str, int]] = {
     "NEET": {
         "correct": 4,
         "wrong": -1,
+        "unattempted": 0
+    },
+    "UPSC": {
+        "correct": 2,
+        "wrong": -0.66,
+        "unattempted": 0
+    },
+    "CSAT": {
+        "correct": 2.5,
+        "wrong": -0.83,
         "unattempted": 0
     }
 }

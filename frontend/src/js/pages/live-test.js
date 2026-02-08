@@ -57,6 +57,17 @@ function loadTestFromStorage() {
         const data = JSON.parse(storedData);
         console.log('Loaded test data:', data);
 
+        // Check if this test has already been submitted
+        const storedResults = sessionStorage.getItem('testResults');
+        if (storedResults) {
+            const results = JSON.parse(storedResults);
+            if (results.testId === data.testId) {
+                console.log('Test already submitted. Redirecting to dashboard.');
+                window.location.href = 'dashboard.html';
+                return;
+            }
+        }
+
         // Check if there's saved state (from refresh)
         const savedState = localStorage.getItem(STATE_KEY);
         if (savedState) {

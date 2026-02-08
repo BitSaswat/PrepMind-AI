@@ -38,6 +38,15 @@ const EXAM_SUBJECTS = {
 
 let currentUserData = null;
 
+// --- IMMEDIATE UI UPDATE ---
+(function applyCachedExamPreference() {
+    const cachedExam = localStorage.getItem('targetExam');
+    if (cachedExam) {
+        // We can safely call this because EXAM_SUBJECTS is defined above
+        renderSubjectSelection(cachedExam);
+    }
+})();
+
 // Check authentication and load user data
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
@@ -105,6 +114,8 @@ function initializeCustomTestPage(user, userData) {
 // Render subject selection checkboxes
 function renderSubjectSelection(examType) {
     const container = document.getElementById('subjectSelection');
+    if (!container) return; // Guard clause to prevent crash
+
     const subjects = EXAM_SUBJECTS[examType] || EXAM_SUBJECTS.JEE;
 
     container.innerHTML = '';

@@ -7,11 +7,17 @@
 let loadingOverlay = null;
 let loadingModal = null;
 let currentProgress = 0;
+let cleanupTimer = null;
 
 /**
  * Initialize loading modal HTML structure
  */
 function initLoadingModal() {
+    if (cleanupTimer) {
+        clearTimeout(cleanupTimer);
+        cleanupTimer = null;
+    }
+
     if (loadingOverlay) return; // Already initialized
 
     // Create overlay
@@ -63,6 +69,7 @@ const AI_MESSAGES = [
  * @param {number} estimatedDuration - Estimated duration in ms (for progress simulation)
  */
 export function showLoadingModal(title = 'Loading...', message = 'Please wait', estimatedDuration = 8000) {
+    console.log('[LoadingModal] showLoadingModal called:', { title, message, estimatedDuration });
     initLoadingModal();
 
     // Reset state
@@ -95,9 +102,10 @@ export function showLoadingModal(title = 'Loading...', message = 'Please wait', 
     }, 2000);
 
     // Show modal
-    requestAnimationFrame(() => {
-        loadingOverlay.classList.add('active');
-    });
+    // Use setTimeout to allow DOM reflow for transition
+    setTimeout(() => {
+        if (loadingOverlay) loadingOverlay.classList.add('active');
+    }, 10);
 
     // Simulate progress (smooth animation)
     if (estimatedDuration > 0) {
@@ -176,17 +184,25 @@ function simulateProgress(duration) {
 export function hideLoadingModal() {
     if (!loadingOverlay) return;
 
+    if (messageInterval) {
+        clearInterval(messageInterval);
+        messageInterval = null;
+    }
+
     if (loadingOverlay) {
         loadingOverlay.classList.remove('active');
     }
 
     // Clean up after animation
-    setTimeout(() => {
+    if (cleanupTimer) clearTimeout(cleanupTimer);
+
+    cleanupTimer = setTimeout(() => {
         if (loadingOverlay && loadingOverlay.parentNode) {
             loadingOverlay.parentNode.removeChild(loadingOverlay);
             loadingOverlay = null;
             loadingModal = null;
         }
+        cleanupTimer = null;
     }, 350); // Match CSS transition duration
 }
 

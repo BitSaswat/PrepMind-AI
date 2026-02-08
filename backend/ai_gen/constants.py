@@ -45,7 +45,9 @@ VALID_DIFFICULTIES: Final[tuple] = (DIFFICULTY_EASY, DIFFICULTY_MEDIUM, DIFFICUL
 # Exam types
 EXAM_JEE: Final[str] = "JEE"
 EXAM_NEET: Final[str] = "NEET"
-VALID_EXAMS: Final[tuple] = (EXAM_JEE, EXAM_NEET)
+EXAM_UPSC: Final[str] = "UPSC"
+EXAM_CSAT: Final[str] = "CSAT"
+VALID_EXAMS: Final[tuple] = (EXAM_JEE, EXAM_NEET, EXAM_UPSC, EXAM_CSAT)
 
 # Question structure
 NUM_OPTIONS: Final[int] = 4

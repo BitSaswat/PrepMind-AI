@@ -106,7 +106,7 @@ class AIService {
         console.log('[AIService] Generating questions:', JSON.stringify(config, null, 2));
 
         try {
-            const result = await this.executePythonCommand('generate-questions', config, 300000); // 5 min timeout
+            const result = await this.executePythonCommand('generate-questions', config, 900000); // 15 min timeout
 
             console.log(`[AIService] Generated ${result.metadata.total_questions} questions`);
 

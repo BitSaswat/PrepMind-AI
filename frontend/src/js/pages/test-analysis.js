@@ -418,7 +418,7 @@ function setupEventListeners() {
     // Back button
     document.getElementById('backBtn').addEventListener('click', () => {
         sessionStorage.removeItem('testResults');
-        window.location.href = 'mocktest.html';
+        window.location.href = 'dashboard.html';
     });
 
     // Filter buttons

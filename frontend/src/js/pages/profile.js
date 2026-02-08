@@ -29,6 +29,25 @@ const showMessage = (element, message, type) => {
   }, 5000);
 };
 
+// --- IMMEDIATE UI UPDATE (Prevents Flash of Wrong Content) ---
+(function applyCachedProfileData() {
+  const cachedExam = localStorage.getItem('targetExam');
+  const cachedYear = localStorage.getItem('targetYear');
+
+  if (cachedExam) {
+    const profileExamBadge = document.getElementById('profileExamBadge');
+    if (profileExamBadge) {
+      profileExamBadge.textContent = `${cachedExam} ${cachedYear || '2026'}`;
+    }
+
+    const viewTargetExam = document.getElementById('viewTargetExam');
+    if (viewTargetExam) viewTargetExam.textContent = cachedExam;
+
+    const viewTargetYear = document.getElementById('viewTargetYear');
+    if (viewTargetYear && cachedYear) viewTargetYear.textContent = cachedYear;
+  }
+})();
+
 // --- AUTH LISTENER ---
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -40,6 +59,11 @@ onAuthStateChanged(auth, async (user) => {
     const userDoc = await getDoc(doc(db, 'users', user.uid));
     if (userDoc.exists()) {
       currentUserData = userDoc.data();
+
+      // Update Cache
+      if (currentUserData.targetExam) localStorage.setItem('targetExam', currentUserData.targetExam);
+      if (currentUserData.targetYear) localStorage.setItem('targetYear', currentUserData.targetYear);
+
       loadProfileData(user, currentUserData);
       setupEventListeners(user, currentUserData);
     } else {

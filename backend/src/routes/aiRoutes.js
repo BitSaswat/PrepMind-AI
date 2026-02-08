@@ -50,10 +50,10 @@ router.post('/ai/generate-questions', async (req, res) => {
         }
 
         // Validate exam type
-        if (!['JEE', 'NEET'].includes(exam)) {
+        if (!['JEE', 'NEET', 'UPSC', 'CSAT'].includes(exam)) {
             return res.status(400).json({
                 success: false,
-                error: 'Invalid exam type. Must be JEE or NEET'
+                error: 'Invalid exam type. Must be JEE, NEET, UPSC, or CSAT'
             });
         }
 

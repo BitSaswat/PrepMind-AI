@@ -67,19 +67,21 @@
                             <option value="" disabled selected>Select your exam</option>
                             <option value="JEE">JEE (Joint Entrance Examination)</option>
                             <option value="NEET">NEET (Medical Entrance)</option>
+                            <option value="UPSC">UPSC (Civil Services Examination)</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="form-grid">
                     <div class="form-group">
-                        <label class="form-label" for="educationLevel">Current Class</label>
+                        <label class="form-label" for="educationLevel">Education Level</label>
                         <div class="select-wrapper">
                             <select id="educationLevel" required>
-                                <option value="" disabled selected>Select Class</option>
+                                <option value="" disabled selected>Select Level</option>
                                 <option value="11th">11th Grade</option>
                                 <option value="12th">12th Grade</option>
                                 <option value="Dropper">Dropper</option>
+                                <option value="Graduate">Graduate</option>
                             </select>
                         </div>
                     </div>
@@ -116,11 +118,43 @@
     </main>
 
     <script src="../js/utils/theme.js"></script>
+    <script type="module" src="../js/utils/brand-navigation.js"></script>
     <script type="module" src="../js/pages/onboarding.js"></script>
     <script>
         // Mark page as loaded
         document.addEventListener('DOMContentLoaded', () => {
             requestAnimationFrame(() => document.body.classList.add('loaded'));
+
+            // Dynamic education level filtering based on exam selection
+            const targetExamSelect = document.getElementById('targetExam');
+            const educationLevelSelect = document.getElementById('educationLevel');
+
+            if (targetExamSelect && educationLevelSelect) {
+                targetExamSelect.addEventListener('change', function () {
+                    const selectedExam = this.value;
+                    const allOptions = educationLevelSelect.querySelectorAll('option');
+
+                    // Reset selection
+                    educationLevelSelect.value = '';
+
+                    // Show/hide options based on exam
+                    allOptions.forEach(option => {
+                        if (option.value === '') {
+                            // Keep placeholder
+                            option.style.display = '';
+                            return;
+                        }
+
+                        if (selectedExam === 'UPSC') {
+                            // For UPSC, show only Graduate
+                            option.style.display = option.value === 'Graduate' ? '' : 'none';
+                        } else {
+                            // For JEE/NEET, show 11th, 12th, Dropper
+                            option.style.display = option.value !== 'Graduate' ? '' : 'none';
+                        }
+                    });
+                });
+            }
         });
     </script>
 </body>
