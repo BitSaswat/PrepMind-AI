@@ -50,7 +50,7 @@ PrepMind AI is built on a robust, event-driven architecture designed for speed a
 ### **Backend**
 *   **Runtime**: **Node.js** environment.
 *   **Framework**: **Express.js** for RESTful APIs.
-*   **Real-Time**: **WebSocket (`ws`)** for full-duplex low-latency audio streaming.
+*   **Real-Time**: **WebSocket (`ws`)**     for full-duplex low-latency audio streaming.
 *   **AI Integration**:
     *   **Google Vertex AI**: For text-to-speech and speech-to-text streams.
     *   **Gemini 2.5 Flash**: For intelligence, reasoning, and transcript generation.
@@ -59,25 +59,27 @@ PrepMind AI is built on a robust, event-driven architecture designed for speed a
 ```text
 PrepMind-AI/
 ├── backend/
+│   ├── ai_gen/        # Python AI Agents (Gemini Logic)
 │   ├── src/
 │   │   ├── websocket/     # Real-time Audio Stream Handler
 │   │   ├── routes/        # API Routes (Interview, Analysis)
 │   │   ├── services/      # Vertex AI & Gemini Integrations
 │   │   └── controllers/   # Request Logic
+│   ├── build.sh           # Custom Render Build Script
 │   └── server.js          # Entry Point
 │
 ├── frontend/
 │   ├── src/
-│   │   ├── assets/
-│   │   │   └── css/       # Modular Styles (mocktest.css, interview-modal.css)
+│   │   ├── assets/        # Styles and Branding
 │   │   ├── js/
-│   │   │   ├── components/# Reusable UI (Modal, Toast, Timer)
-│   │   │   ├── pages/     # Page Validation & Logic
-│   │   │   └── utils/     # Helpers (Auth, Formatting)
-│   │   └── pages/         # HTML Views (Dashboard, Live Test, Interview)
+│   │   │   ├── config.js  # Environment Configuration
+│   │   │   ├── components/# Reusable UI
+│   │   │   └── pages/     # Page Logic
 │   └── index.html         # Landing Page
 │
-└── README.md              # Documentation
+├── render.yaml            # Render Deployment Blueprint
+├── vercel.json            # Vercel Configuration
+└── DEPLOYMENT.md          # Detailed Deployment Guide
 ```
 
 ---
@@ -86,8 +88,8 @@ PrepMind-AI/
 
 ### Prerequisites
 *   Node.js (v16 or higher)
-*   NPM (v8 or higher)
-*   A Google Cloud Project with **Vertex AI API** enabled.
+*   Python 3.9+ (for AI modules)
+*   Google Cloud Project with **Vertex AI API** enabled.
 
 ### 1. Clone the Repository
 ```bash
@@ -95,17 +97,24 @@ git clone https://github.com/yourusername/PrepMind-AI.git
 cd PrepMind-AI
 ```
 
-### 2. Setup Backend
+### 2. Setup Backend (Hybrid Node.js + Python)
 ```bash
 cd backend
+# Install Node dependencies
 npm install
+
+# Install Python dependencies
+pip install -r requirements.txt
 ```
 
 Create a `.env` file in the `backend/` directory:
 ```env
 PORT=5000
 GOOGLE_CLOUD_PROJECT=your-gcp-project-id
+# Option A: Local File Path
 GOOGLE_APPLICATION_CREDENTIALS=path/to/your/service-account.json
+# Option B: JSON Content (Better for Render/Production)
+GOOGLE_APPLICATION_CREDENTIALS_JSON={"type": "service_account", ...}
 ```
 
 Start the server:
@@ -136,6 +145,7 @@ PrepMind AI can be deployed for **$0/month** using free tiers:
 - **Keep-Alive**: Cron-job.org (prevents backend sleep)
 
 📖 **[Complete Deployment Guide →](DEPLOYMENT.md)**
+
 
 The deployment guide includes:
 - Step-by-step Render backend setup

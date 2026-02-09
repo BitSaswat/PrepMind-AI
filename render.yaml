@@ -1,11 +1,12 @@
 services:
   - type: web
     name: prepmind-backend
-    env: node
+    env: python
     region: oregon
     plan: free
-    buildCommand: cd backend && npm install && pip install -r requirements.txt
-    startCommand: cd backend && npm start
+    rootDir: backend
+    buildCommand: bash build.sh
+    startCommand: node server.js
     healthCheckPath: /ping
     envVars:
       - key: NODE_ENV

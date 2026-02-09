@@ -3,9 +3,27 @@ const app = require('./src/app');
 const InterviewSocketServer = require('./src/websocket/interviewSocket');
 require('dotenv').config();
 
+const fs = require('fs');
+const path = require('path');
+const os = require('os');
+
 const PORT = process.env.PORT || 5000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const isProduction = NODE_ENV === 'production';
+
+// Configure Google Cloud Credentials for Render
+try {
+  const credentialsJson = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
+  if (credentialsJson) {
+    console.log('🔑 Configuring Google Cloud Credentials from environment...');
+    const credentialsPath = path.join(os.tmpdir(), 'google-credentials.json');
+    fs.writeFileSync(credentialsPath, credentialsJson);
+    process.env.GOOGLE_APPLICATION_CREDENTIALS = credentialsPath;
+    console.log(`✅ Credentials written to ${credentialsPath}`);
+  }
+} catch (error) {
+  console.error('❌ Failed to configure Google Cloud Credentials:', error);
+}
 
 // Create HTTP server
 const server = http.createServer(app);

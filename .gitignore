@@ -41,8 +41,19 @@ Thumbs.db
 
 # Python (AI modules)
 venv/
+backend/venv/
+env/
+backend/env/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+.venv
+.pytest_cache/
+google-credentials.json
 
 # Documentation (user preference - NOT recommended)
 # Note: DEPLOYMENT.md contains important deployment instructions
