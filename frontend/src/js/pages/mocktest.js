@@ -24,6 +24,7 @@ import {
   setProgress,
   setLoadingStatus
 } from '../utils/loading-modal.js';
+import { showInterviewModal } from '../components/interviewModal.js';
 
 const db = getFirestore();
 let currentUserData = null;
@@ -223,8 +224,8 @@ function setupEventListeners() {
     });
   }
 
-  // Test start buttons
-  const testButtons = document.querySelectorAll('.test-btn');
+  // Test start buttons (Exclude UPSC cards as they have their own handler)
+  const testButtons = document.querySelectorAll('.test-card:not(.upsc-test-card) .test-btn');
   testButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
       const testCard = e.target.closest('.test-card');
@@ -265,7 +266,7 @@ function setupEventListeners() {
   // Initialize UPSC Accordion
   initializeUPSCAccordion();
 
-  // UPSC test card buttons (including new Interview section)
+  // UPSC test card buttons (including Interview section)
   const upscTestButtons = document.querySelectorAll('.upsc-test-card .test-btn');
   upscTestButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -286,11 +287,17 @@ function setupEventListeners() {
           return;
         }
 
+        // Handle Mock Interview - Show Interview Modal
+        if (paper === 'interview-mock') {
+          showInterviewModal();
+          return;
+        }
+
         let modalTitle = 'UPSC Test Coming Soon! 📚';
         let modalMessage = `The "${testTitle}" test interface is being developed with special features for UPSC preparation. We're making it comprehensive and student-friendly!`;
 
-        // Customize message for Interview
-        if (paper === 'interview-mock' || paper === 'daf-analysis') {
+        // Customize message for DAF Analysis
+        if (paper === 'daf-analysis') {
           modalTitle = 'Interview Prep Coming Soon! 🤝';
           modalMessage = `Our AI-powered "${testTitle}" feature is under construction. Get ready for real-time feedback and DAF analysis!`;
         }

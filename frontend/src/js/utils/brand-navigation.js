@@ -3,6 +3,7 @@
 
 import { auth } from '../config/firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { showToast } from './toast.js';
 
 // Store auth state
 let isUserLoggedIn = false;
@@ -21,7 +22,27 @@ export function initBrandNavigation() {
     brandElements.forEach(brand => {
         brand.style.cursor = 'pointer';
 
-        brand.addEventListener('click', async () => {
+        brand.addEventListener('click', async (e) => {
+            // RESTRICTION CHECK: Prevent navigation on critical pages
+            const currentPath = window.location.pathname;
+            const isRestrictedPage = currentPath.includes('onboarding.html') || currentPath.includes('live-test.html');
+            const isInterviewActive = document.querySelector('.interview-modal-overlay.active'); // Check for active interview modal
+
+            if (isRestrictedPage || isInterviewActive) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Show warning
+                if (typeof showToast === 'function') {
+                    showToast('Action disabled during live session', 'warning');
+                } else {
+                    console.warn('Navigation disabled: Live session active');
+                    // Fallback alert if toast fails or isn't loaded
+                    alert('You cannot leave this page during a live session.');
+                }
+                return;
+            }
+
             // Wait for auth state to be ready if not already
             if (!authStateReady) {
                 await new Promise((resolve) => {
@@ -46,27 +67,21 @@ export function initBrandNavigation() {
 }
 
 // Helper function to get relative path based on current location
+// Helper function to get relative path based on current location
 function getRelativePath(targetPage) {
     const currentPath = window.location.pathname;
 
-    // If we're on index.html or at root
-    if (currentPath.endsWith('index.html') || currentPath.endsWith('/')) {
-        if (targetPage === 'index.html') {
-            return 'index.html';
-        }
+    // Check if we are in the root directory (e.g., /index.html or /)
+    const isRoot = currentPath.endsWith('index.html') || currentPath.endsWith('/') || !currentPath.includes('/src/pages/');
+
+    if (isRoot) {
+        if (targetPage === 'index.html') return 'index.html';
         return `src/pages/${targetPage}`;
+    } else {
+        // We are inside src/pages/ (or a subdirectory of it)
+        if (targetPage === 'index.html') return '../../index.html';
+        return targetPage; // Already in pages/ so just return 'dashboard.html' etc.
     }
-
-    // If we're in /src/pages/
-    if (currentPath.includes('/src/pages/')) {
-        if (targetPage === 'index.html') {
-            return '../../index.html';
-        }
-        return targetPage;
-    }
-
-    // Default fallback
-    return targetPage;
 }
 
 // Auto-initialize on DOM load

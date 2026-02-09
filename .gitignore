@@ -36,9 +36,23 @@ firebase-debug.log*
 *:Zone.Identifier
 
 
-# AI GIT IGNORE
-.env
-venv/
+# Backend specific
+backend/node_modules/
+backend/.env
 backend/logs/
+
+# Frontend specific
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# AI & Python (if applicable)
+venv/
 __pycache__/
 *.log
+*.pyc
+
+# System
+.DS_Store
+.env
+node_modules/

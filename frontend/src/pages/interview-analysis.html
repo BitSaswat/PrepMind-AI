@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Detailed interview performance analysis">
+    <title>Interview Analysis | PrepMind AI</title>
+    <style>
+        body {
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+    </style>
+    <!-- Reuse the exact same CSS as test analysis for the base theme -->
+    <!-- Reuse the exact same CSS as test analysis for the base theme -->
+    <link rel="stylesheet" href="../assets/css/performance.css?v=3">
+    <link rel="stylesheet" href="../assets/css/theme-transitions.css?v=3">
+    <link rel="stylesheet" href="../assets/css/theme-toggle.css?v=3">
+    <link rel="stylesheet" href="../assets/css/interview-analysis.css?v=6">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="analysis-header">
+        <div class="header-left">
+            <div class="brand">Prep<span>Mind</span> AI</div>
+            <div class="test-info">
+                <span>UPSC Interview</span>
+                <span class="divider">|</span>
+                <span id="testDate">Analysis</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="btn-secondary" id="backBtn">← Back to Dashboard</button>
+            <div id="themeToggle" class="theme-toggle-mini"></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="analysis-container">
+        <!-- Performance Overview Section -->
+        <section class="overview-section">
+            <h2 class="section-title">📊 Performance Overview</h2>
+
+            <div class="overview-grid">
+                <!-- Duration Card -->
+                <div class="stat-card time-card">
+                    <div class="card-icon">⏱️</div>
+                    <div class="card-content">
+                        <span class="card-label">Duration</span>
+                        <span class="card-value" id="durationValue">--</span>
+                        <span class="card-subtext">Interview Time</span>
+                    </div>
+                </div>
+
+                <!-- Exchanges Card -->
+                <div class="stat-card accuracy-card">
+                    <div class="card-icon">💬</div>
+                    <div class="card-content">
+                        <span class="card-label">Exchanges</span>
+                        <span class="card-value" id="exchangesValue">--</span>
+                        <span class="card-subtext">Q&A Interactions</span>
+                    </div>
+                </div>
+
+                <!-- Turn Ratio -->
+                <div class="stat-card attempt-card">
+                    <div class="card-icon">🗣️</div>
+                    <div class="card-content">
+                        <span class="card-label">Word Count</span>
+                        <span class="card-value" id="wordCountValue">--</span>
+                        <span class="card-subtext">Words Spoken by You</span>
+                    </div>
+                </div>
+
+                <!-- Overall Score -->
+                <div class="stat-card score-card">
+                    <div class="card-icon">🎯</div>
+                    <div class="card-content">
+                        <span class="card-label">Overall Score</span>
+                        <span class="card-value" id="overallScoreValue">--/100</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="overallProgress"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overall Summary Card -->
+            <div class="solution-section"
+                style="margin-bottom: 3rem; background: var(--card-bg); border: 1px solid var(--border); box-shadow: var(--shadow-card);">
+                <h3 class="solution-title" style="font-size: 1.25rem;">🤖 Overall Assessment</h3>
+                <div class="solution-text" id="overallSummaryText" style="color: var(--text-primary); font-size: 1rem;">
+                    Generating analysis...
+                </div>
+            </div>
+
+            <!-- Detailed Metrics Grid -->
+            <h2 class="section-title">📉 Detailed Breakdown</h2>
+            <div class="charts-grid"
+                style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: 3rem;">
+                <!-- Communication -->
+                <div class="chart-card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 class="chart-title" style="margin: 0;">Communication</h3>
+                        <span class="status-badge correct" id="commBadge">--%</span>
+                    </div>
+                    <div class="progress-bar" style="margin-bottom: 1rem;">
+                        <div class="progress-fill" id="commProgress" style="width: 0%; background: var(--accent);">
+                        </div>
+                    </div>
+                    <p class="solution-text" id="commFeedback">Analyzing...</p>
+                </div>
+
+                <!-- Knowledge -->
+                <div class="chart-card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 class="chart-title" style="margin: 0;">Knowledge Depth</h3>
+                        <span class="status-badge wrong" id="knowBadge"
+                            style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">--%</span>
+                    </div>
+                    <div class="progress-bar" style="margin-bottom: 1rem;">
+                        <div class="progress-fill" id="knowProgress" style="width: 0%; background: #f59e0b;"></div>
+                    </div>
+                    <p class="solution-text" id="knowFeedback">Analyzing...</p>
+                </div>
+
+                <!-- Critical Thinking -->
+                <div class="chart-card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 class="chart-title" style="margin: 0;">Critical Thinking</h3>
+                        <span class="status-badge skipped" id="thinkBadge"
+                            style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">--%</span>
+                    </div>
+                    <div class="progress-bar" style="margin-bottom: 1rem;">
+                        <div class="progress-fill" id="thinkProgress" style="width: 0%; background: #8b5cf6;"></div>
+                    </div>
+                    <p class="solution-text" id="thinkFeedback">Analyzing...</p>
+                </div>
+
+                <!-- Professionalism -->
+                <div class="chart-card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 class="chart-title" style="margin: 0;">Professionalism</h3>
+                        <span class="status-badge correct" id="profBadge"
+                            style="background: rgba(16, 185, 129, 0.1); color: #10b981;">--%</span>
+                    </div>
+                    <div class="progress-bar" style="margin-bottom: 1rem;">
+                        <div class="progress-fill" id="profProgress" style="width: 0%; background: #10b981;"></div>
+                    </div>
+                    <p class="solution-text" id="profFeedback">Analyzing...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Insights Section -->
+        <section class="insights-section">
+            <h2 class="section-title">💡 Key Insights</h2>
+            <div class="insights-grid">
+                <div class="insight-card strengths">
+                    <div class="insight-header">
+                        <span class="insight-icon">💪</span>
+                        <h3>Strengths</h3>
+                    </div>
+                    <ul id="strengthsList"></ul>
+                </div>
+                <div class="insight-card weaknesses">
+                    <div class="insight-header">
+                        <span class="insight-icon">📚</span>
+                        <h3>Areas to Improve</h3>
+                    </div>
+                    <ul id="weaknessesList"></ul>
+                </div>
+                <div class="insight-card recommendations">
+                    <div class="insight-header">
+                        <span class="insight-icon">🎓</span>
+                        <h3>Recommendations</h3>
+                    </div>
+                    <ul id="recommendationsList"></ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Transcript Section -->
+        <section class="review-section">
+            <div class="review-header">
+                <h2 class="section-title">📝 Full Transcript</h2>
+            </div>
+
+            <div class="transcript-viewer" id="transcriptViewer">
+                <!-- Transcript will be populated here -->
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/utils/theme.js?v=2"></script>
+    <script type="module" src="../js/utils/brand-navigation.js"></script>
+    <script type="module" src="../js/pages/interview-analysis.js?v=2"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            requestAnimationFrame(() => document.body.classList.add('loaded'));
+        });
+    </script>
+</body>
+
+</html>
