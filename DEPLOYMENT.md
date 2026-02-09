@@ -32,16 +32,35 @@ This guide will help you deploy PrepMind AI with **$0 hosting costs forever** us
 
 ## Step 1: Deploy Backend to Render
 
-### 1.1 Push Code to GitHub
+### Option 1: Blueprint Deployment (Recommended) 🚀
 
-```bash
-cd /Users/om/prep_mind_ai/PrepMind-AI
-git add .
-git commit -m "Add Render deployment configuration"
-git push origin main
-```
+This is the easiest method using the `render.yaml` file we created.
 
-### 1.2 Create Render Web Service
+1.  **Push Code to GitHub**:
+    ```bash
+    git add .
+    git commit -m "Deploy with Render Blueprint"
+    git push origin main
+    ```
+
+2.  **Create Blueprint Instance**:
+    *   Go to [Render Dashboard](https://dashboard.render.com/)
+    *   Click **"New +"** → **"Blueprint Invocation"**
+    *   Connect your GitHub repository
+    *   Render will automatically detect `render.yaml` and configure:
+        *   Service Name: `prepmind-backend`
+        *   Runtime: Node
+        *   Build/Start Commands: Pre-configured
+
+3.  **Approve & Deploy**:
+    *   Click **"Apply"**
+    *   Sit back and wait! ☕
+
+### Option 2: Manual Deployment
+
+If you prefer to configure manually:
+
+### 1.1 Create Render Web Service
 
 1. Go to [Render Dashboard](https://dashboard.render.com/)
 2. Click **"New +"** → **"Web Service"**
@@ -50,16 +69,14 @@ git push origin main
 
    | Setting | Value |
    |---------|-------|
-   | **Name** | `prepmind-backend` (or your choice) |
+   | **Name** | `prepmind-backend` |
    | **Region** | Oregon (US West) |
    | **Branch** | `main` |
    | **Root Directory** | Leave empty |
    | **Runtime** | Node |
    | **Build Command** | `cd backend && npm install` |
-   | **Start Command** | `cd backend && npm start` (or `cd backend && node server.js`) |
+   | **Start Command** | `cd backend && npm start` |
    | **Instance Type** | **Free** ⚠️ Important! |
-
-   > **Note**: `npm start` and `node server.js` are equivalent - `npm start` just runs `node server.js` as defined in package.json.
 
 5. Click **"Advanced"** and add environment variables:
 
@@ -68,10 +85,11 @@ git push origin main
    | `NODE_ENV` | `production` |
    | `GOOGLE_CLOUD_PROJECT` | Your Google Cloud project ID |
    | `FRONTEND_URL` | `https://your-app.vercel.app` (update after Vercel deployment) |
+   | `GOOGLE_APPLICATION_CREDENTIALS_JSON` | Content of your GCP Service Account JSON |
 
 6. Click **"Create Web Service"**
 
-### 1.3 Wait for Deployment
+### 1.2 Wait for Deployment
 
 - Render will build and deploy your backend
 - This takes 3-5 minutes
