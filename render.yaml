@@ -4,8 +4,9 @@ services:
     env: python
     region: oregon
     plan: free
-    buildCommand: cd backend && pip install -r requirements.txt && npm install
-    startCommand: cd backend && node server.js
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt && npm install
+    startCommand: node server.js
     healthCheckPath: /ping
     envVars:
       - key: NODE_ENV
