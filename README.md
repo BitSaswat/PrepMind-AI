@@ -1,7 +1,7 @@
 # 🧠 PrepMind AI
 > **Accept No Limits. Master Your Exam.**
 
-![PrepMind AI Banner](https://via.placeholder.com/1200x400/0071e3/ffffff?text=PrepMind+AI+-+The+Future+of+Exam+Prep)
+![PrepMind AI Banner](frontend/src/assets/branding/banner.png)
 
 **PrepMind AI** is a cutting-edge, AI-powered exam preparation platform designed for serious aspirants of **UPSC, JEE, and NEET**. We combine advanced Generative AI with rigorous testing protocols to provide a holistic preparation ecosystem—from high-stakes mock interviews to adaptive subject tests.
 
