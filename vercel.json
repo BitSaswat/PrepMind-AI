@@ -1,18 +1,6 @@
 {
     "buildCommand": "cd frontend && echo 'No build needed for static frontend'",
     "outputDirectory": "frontend",
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "/$1"
-        }
-    ],
-    "rewrites": [
-        {
-            "source": "/src/pages/(.*)",
-            "destination": "/src/pages/$1"
-        }
-    ],
     "headers": [
         {
             "source": "/(.*)",
