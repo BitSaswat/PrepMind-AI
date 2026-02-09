@@ -23,7 +23,7 @@ const Config = {
         }
         // TODO: Replace with your actual Render URL after deployment
         // Example: 'https://prepmind-backend.onrender.com'
-        return process.env.BACKEND_URL || 'https://your-app-name.onrender.com';
+        return process.env.BACKEND_URL || 'https://prepmind-backend.onrender.com';
     },
 
     /**
