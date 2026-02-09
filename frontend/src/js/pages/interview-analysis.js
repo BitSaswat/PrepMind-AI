@@ -3,6 +3,9 @@
  * Displays detailed performance analysis after interview
  */
 
+// Import configuration
+import Config from '../config.js';
+
 // Load interview data from localStorage
 const interviewData = JSON.parse(localStorage.getItem('lastInterviewData') || '{}');
 
@@ -102,8 +105,9 @@ async function generateAIAnalysis() {
             .map(t => `${t.speaker.toUpperCase()}: ${t.text}`)
             .join('\n');
 
-        // Call backend to generate analysis
-        const response = await fetch('http://localhost:5000/api/analyze-interview', {
+        // Call backend to generate analysis using Config
+        const apiURL = Config.getAPIURL();
+        const response = await fetch(`${apiURL}/analyze-interview`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

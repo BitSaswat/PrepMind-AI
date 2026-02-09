@@ -3,6 +3,9 @@
  * Handles UPSC AI Interview modal display and WebSocket communication
  */
 
+// Import configuration
+import Config from '../config.js';
+
 let ws = null;
 let mediaRecorder = null;
 let audioContext = null;
@@ -140,9 +143,12 @@ export function hideInterviewModal() {
  */
 function initializeWebSocket() {
     const statusPill = document.getElementById('connectionStatus');
+    const wsURL = Config.getWebSocketURL();
+
+    console.log(`🔌 Connecting to WebSocket: ${wsURL}`);
 
     try {
-        ws = new WebSocket('ws://localhost:5000/interview');
+        ws = new WebSocket(wsURL);
 
         ws.onopen = () => {
             console.log('✅ WebSocket connected');

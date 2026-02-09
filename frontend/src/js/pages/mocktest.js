@@ -25,6 +25,7 @@ import {
   setLoadingStatus
 } from '../utils/loading-modal.js';
 import { showInterviewModal } from '../components/interviewModal.js';
+import Config from '../config.js';
 
 const db = getFirestore();
 let currentUserData = null;
@@ -432,7 +433,8 @@ async function handleFullLengthNEETTest() {
     setProgress(30);
     setLoadingStatus('Calling AI model...');
 
-    const response = await fetch('http://localhost:5000/api/ai/generate-questions', {
+    const apiURL = Config.getAPIURL();
+    const response = await fetch(`${apiURL}/ai/generate-questions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -548,7 +550,8 @@ async function handleFullLengthJEETest() {
     setProgress(30);
     setLoadingStatus('Calling AI model...');
 
-    const response = await fetch('http://localhost:5000/api/ai/generate-questions', {
+    const apiURL = Config.getAPIURL();
+    const response = await fetch(`${apiURL}/ai/generate-questions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -682,8 +685,9 @@ async function handleGSPreTest() {
     setProgress(30);
     setLoadingStatus('Referring to standard books and resources...');
 
+    const apiURL = Config.getAPIURL();
     console.log('[handleGSPreTest] Sending API request...', { exam: 'UPSC', subjectData });
-    const response = await fetch('http://localhost:5000/api/ai/generate-questions', {
+    const response = await fetch(`${apiURL}/ai/generate-questions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -803,8 +807,9 @@ async function handleCSATTest() {
     setProgress(30);
     setLoadingStatus('Analyzing previous year trends...');
 
+    const apiURL = Config.getAPIURL();
     console.log('[handleCSATTest] Sending API request...', { exam: 'CSAT', subjectData });
-    const response = await fetch('http://localhost:5000/api/ai/generate-questions', {
+    const response = await fetch(`${apiURL}/ai/generate-questions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

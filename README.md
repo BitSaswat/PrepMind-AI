@@ -11,7 +11,7 @@
 
 ### 1. 🎙️ AI-Powered UPSC Interview Board
 Experience the pressure of a real Civil Services Personality Test from the comfort of your home.
-*   **Real-Time Voice Interrogation**: Powered by **Google Vertex AI** and **Gemini 2.0**, our AI interviewer conducts full voice-based interviews with <200ms latency.
+*   **Real-Time Voice Interrogation**: Powered by **Google Vertex AI** and **Gemini 2.5**, our AI interviewer conducts full voice-based interviews with <200ms latency.
 *   **Adaptive Questioning**: The AI analyzes your DAF (Detailed Application Form) profile to ask personalized, probing questions.
 *   **Strict Persona ('Charon')**: A no-nonsense interviewer personality that mocks the strictness of a real UPSC board.
 *   **Live Conduct Monitoring**: The system automatically detects unprofessional language or aggression and terminates the interview immediately, enforcing discipline.
@@ -53,7 +53,7 @@ PrepMind AI is built on a robust, event-driven architecture designed for speed a
 *   **Real-Time**: **WebSocket (`ws`)** for full-duplex low-latency audio streaming.
 *   **AI Integration**:
     *   **Google Vertex AI**: For text-to-speech and speech-to-text streams.
-    *   **Gemini 1.5/2.0 Flash**: For intelligence, reasoning, and transcript generation.
+    *   **Gemini 2.5 Flash**: For intelligence, reasoning, and transcript generation.
 
 ### **Project Structure**
 ```text
@@ -122,6 +122,27 @@ Simply serve the `frontend` folder using any static file server.
 *   **Python**: `cd frontend && python3 -m http.server 8000`
 
 Visit `http://127.0.0.1:8000` to start using PrepMind AI.
+
+---
+
+## 🌐 Deployment
+
+### Zero-Cost Production Deployment
+
+PrepMind AI can be deployed for **$0/month** using free tiers:
+
+- **Backend**: Render Free Tier (with WebSocket support)
+- **Frontend**: Vercel Free Tier
+- **Keep-Alive**: Cron-job.org (prevents backend sleep)
+
+📖 **[Complete Deployment Guide →](DEPLOYMENT.md)**
+
+The deployment guide includes:
+- Step-by-step Render backend setup
+- Vercel frontend deployment
+- Cron-job.org pinger configuration
+- Environment variables reference
+- Troubleshooting tips
 
 ---
 

@@ -18,6 +18,7 @@ import {
     setProgress,
     setLoadingStatus
 } from '../utils/loading-modal.js';
+import Config from '../config.js';
 
 const db = getFirestore();
 
@@ -375,7 +376,8 @@ async function handlePdfGeneration(config) {
         setProgress(20);
         setLoadingStatus('Calling AI model...');
 
-        const response = await fetch('http://localhost:5000/api/ai/generate-questions', {
+        const apiURL = Config.getAPIURL();
+        const response = await fetch(`${apiURL}/ai/generate-questions`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -405,7 +407,7 @@ async function handlePdfGeneration(config) {
         );
         setLoadingStatus('Generating PDF document...');
 
-        const pdfResponse = await fetch('http://localhost:5000/api/ai/generate-pdf', {
+        const pdfResponse = await fetch(`${apiURL}/ai/generate-pdf`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -490,7 +492,8 @@ async function handleLiveTest(config) {
         setProgress(30);
         setLoadingStatus('Calling AI model...');
 
-        const response = await fetch('http://localhost:5000/api/ai/generate-questions', {
+        const apiURL = Config.getAPIURL();
+        const response = await fetch(`${apiURL}/ai/generate-questions`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

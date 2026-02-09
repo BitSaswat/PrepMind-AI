@@ -62,11 +62,11 @@ CRITICAL INSTRUCTION: MARK VERY STRICTLY.
 - A score of 200+/250 is EXCEPTIONAL and rare.
 - If the transcript is very short or the candidate failed to answer, give VERY LOW scores (e.g., 20-50/250).`;
 
-        console.log('Generating analysis with gemini-2.0-flash-001...');
+        console.log('Generating analysis with gemini-2.5-flash...');
 
-        // Use gemini-2.0-flash-001 which is explicitly listed in available models
+        // Use gemini-2.5-flash as requested
         const response = await client.models.generateContent({
-            model: 'gemini-2.0-flash-001',
+            model: 'gemini-2.5-flash',
             contents: [{
                 role: 'user',
                 parts: [{ text: prompt }]
