@@ -60,6 +60,28 @@ class LLMService:
         
         # Initialize Vertex AI Client
         try:
+            # Check if credentials are provided via environment variable (for Render)
+            creds_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")
+            
+            if creds_json:
+                # Write credentials to a temporary file
+                import json
+                import tempfile
+                
+                logger.info("Using credentials from GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable")
+                
+                # Parse and validate JSON
+                creds_data = json.loads(creds_json)
+                
+                # Create a temporary file for credentials
+                with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+                    json.dump(creds_data, f)
+                    temp_creds_path = f.name
+                
+                # Set the environment variable to point to the temp file
+                os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = temp_creds_path
+                logger.info(f"Credentials written to temporary file: {temp_creds_path}")
+            
             self.client = genai.Client(
                 vertexai=True,
                 project=self.project_id,
