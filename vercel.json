@@ -1,5 +1,4 @@
 {
-    "buildCommand": "cd frontend && echo 'No build needed for static frontend'",
     "outputDirectory": "frontend",
     "headers": [
         {
