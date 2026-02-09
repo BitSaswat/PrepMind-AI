@@ -11,7 +11,18 @@ const fs = require('fs').promises;
 
 class AIService {
     constructor() {
-        this.pythonPath = path.join(__dirname, '../../venv/bin/python3');
+        // Use system python3 on Render, or venv locally if it exists
+        const venvPath = path.join(__dirname, '../../venv/bin/python3');
+        const fs = require('fs');
+
+        // Check if venv exists (local development)
+        if (fs.existsSync(venvPath)) {
+            this.pythonPath = venvPath;
+        } else {
+            // Use system python3 (Render/production)
+            this.pythonPath = 'python3';
+        }
+
         this.aiGenPath = path.join(__dirname, '../../ai_gen');
         this.cliPath = path.join(this.aiGenPath, 'cli.py');
     }
