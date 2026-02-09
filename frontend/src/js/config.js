@@ -23,7 +23,7 @@ const Config = {
         }
         // TODO: Replace with your actual Render URL after deployment
         // Example: 'https://prepmind-backend.onrender.com'
-        return process.env.BACKEND_URL || 'https://prepmind-backend.onrender.com';
+        return 'https://prepmind-backend.onrender.com';
     },
 
     /**
@@ -65,7 +65,5 @@ if (Config.isLocal()) {
     Config.logConfig();
 }
 
-// Export for use in other files
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = Config;
-}
+// Export for ES6 modules
+export default Config;
