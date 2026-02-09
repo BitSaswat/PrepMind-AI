@@ -63,6 +63,12 @@ class LLMService:
             # Check if credentials are provided via environment variable (for Render)
             creds_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")
             
+            # Debug logging
+            if creds_json:
+                logger.info("✅ GOOGLE_APPLICATION_CREDENTIALS_JSON found in environment")
+            else:
+                logger.warning("❌ GOOGLE_APPLICATION_CREDENTIALS_JSON not found in environment, using default credentials")
+            
             if creds_json:
                 # Write credentials to a temporary file
                 import json
